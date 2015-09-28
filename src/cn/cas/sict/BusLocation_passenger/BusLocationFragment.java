@@ -40,8 +40,8 @@ public class BusLocationFragment extends Fragment implements
 		AMapLocationListener {
 
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
-			123.43, 41.80), 10, 0, 0);
-	Button btUserLoc, btBusLoc;
+			41.79676, 123.429096), 11, 0, 0);
+	Button btUserLoc, btBusLoc, bt_traffic;
 	AMap map;
 	MapView mapView;
 	LatLng userLatLng, busLatLng;
@@ -71,12 +71,12 @@ public class BusLocationFragment extends Fragment implements
 		public void handleMessage(Message msg) {
 			if (msg.what == 3) { // 执行定时任务
 				requestDriverLoc();// 发送HTTp请求
-				if (!hasMoveCamera) {
-					map.animateCamera(CameraUpdateFactory.newLatLngBounds(
-							new LatLngBounds.Builder().include(busLatLng)
-									.include(userLatLng).build(), 10, 10, 5));
-					hasMoveCamera = true;
-				}
+//				if (!hasMoveCamera) {
+//					map.animateCamera(CameraUpdateFactory.newLatLngBounds(
+//							new LatLngBounds.Builder().include(busLatLng)
+//									.include(userLatLng).build(), 10, 10, 5));
+//					hasMoveCamera = true;
+//				}
 			}
 
 		}
@@ -97,7 +97,6 @@ public class BusLocationFragment extends Fragment implements
 		userLocMap = new HashMap<String, String>();
 		driverMarkerOption = new MarkerOptions();
 		userMarkerOption = new MarkerOptions();
-		Log.i("aaa", "fra create");
 	}
 
 	// 每次创建，绘制该fragment的view组件时回调该方法
@@ -114,8 +113,10 @@ public class BusLocationFragment extends Fragment implements
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng,
-						16));
+				if (userLatLng != null) {
+					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+							userLatLng, 16));
+				}
 			}
 		});
 		btBusLoc = (Button) rootView.findViewById(R.id.bt_busloc);
@@ -124,8 +125,27 @@ public class BusLocationFragment extends Fragment implements
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				map.animateCamera(CameraUpdateFactory.newLatLngZoom(busLatLng,
-						16));
+				if (busLatLng != null) {
+					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+							busLatLng, 16));
+				}
+				Log.i("test", "buslatlng is null");
+			}
+		});
+		bt_traffic = (Button) rootView.findViewById(R.id.bt_traffic);
+		bt_traffic.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				if (map.isTrafficEnabled()) {
+					bt_traffic.setText("显示路况");
+					map.setTrafficEnabled(false);
+				} else {
+					bt_traffic.setText("隐藏路况");
+					map.setTrafficEnabled(true);
+
+				}
 			}
 		});
 
@@ -178,8 +198,7 @@ public class BusLocationFragment extends Fragment implements
 			userLocMap.put("lng", String.valueOf(userLatLng.longitude));
 			userLocMap.put("rout", "1");
 			isUserlocValid = true;
-			ToastUtil.show(getActivity(), "我的位置定位成功" + userLatLng.toString());
-			Log.i("userLatLng", userLocMap.toString());
+			Log.i("test", "userLatLng   "+userLocMap.toString());
 		} else {
 			Log.e("AmapErr", "Location ERR:"
 					+ amapLocation.getAMapException().getErrorCode());
@@ -215,7 +234,6 @@ public class BusLocationFragment extends Fragment implements
 		super.onStop();
 		timerTask.cancel();
 		timer.purge();
-		Log.i("zzz", "fra onStop");
 	}
 
 	/**
@@ -225,7 +243,6 @@ public class BusLocationFragment extends Fragment implements
 	public void onDestroy() {
 		super.onDestroy();
 		mapView.onDestroy();
-		Log.i("zzz", "fra onDestroy");
 	}
 
 	/**
@@ -261,11 +278,10 @@ public class BusLocationFragment extends Fragment implements
 
 	}
 
-	private boolean requestDriverLoc() {
+	private void requestDriverLoc() {
 		// TODO Auto-generated method stub
 		try {
-			JSONObject jsonObj = new JSONObject(HttpUtil.postRequest("url",
-					userLocMap));
+			JSONObject jsonObj = new JSONObject(HttpUtil.post("url", userLocMap));
 			if (jsonObj.get("flag").equals("true")) {
 				driverLocDes = jsonObj.getString("desc");
 				busLatLng = new LatLng(
@@ -274,20 +290,20 @@ public class BusLocationFragment extends Fragment implements
 				drvierMarker.setTitle(driverLocDes);
 				drvierMarker.setPosition(busLatLng);
 				drvierMarker.showInfoWindow();
-				// map.animateCamera(CameraUpdateFactory.newLatLng(busLatLng));
-				Log.i("receivejson", jsonObj.toString());
-				Log.i("aaaa", Thread.currentThread() + " a " + a++);
-				return true;
+				Log.i("test", "receivejson   "+jsonObj.toString());
+				Log.i("test", Thread.currentThread() + " a " + a++);
+			}else{
+				ToastUtil.show(getActivity(), "班车未上传位置");
 			}
-			return false;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			Log.i("err", e.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			Log.i("err", e.toString());
+			ToastUtil.show(getActivity(), "服务器无响应");
 		}
 	}
 
@@ -304,7 +320,7 @@ public class BusLocationFragment extends Fragment implements
 		 * 所以同一个定时器任务只能被放置一次
 		 */
 		timerTask = new MyTimerTask(); // 新建一个任务（必须）
-		timer.scheduleAtFixedRate(timerTask, 0, 3000);
+		timer.scheduleAtFixedRate(timerTask, 500, 5000);
 	}
 
 	/**

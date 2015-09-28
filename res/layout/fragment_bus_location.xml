@@ -28,6 +28,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/bt_userloc"
             android:text="班车位置" />
+
+        <Button
+            android:id="@+id/bt_traffic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="显示路况" />
     </LinearLayout>
 
 </RelativeLayout>

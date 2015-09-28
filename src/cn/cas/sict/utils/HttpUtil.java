@@ -42,7 +42,7 @@ public class HttpUtil {
 	 * @throws Exception
 	 */
 	public static String postRequest(final String url,
-			final Map<String, String> rawParams) throws Exception {
+			final Map<String, String> map) throws Exception {
 		FutureTask<String> task = new FutureTask<String>(
 				new Callable<String>() {
 					@Override
@@ -51,38 +51,60 @@ public class HttpUtil {
 						HttpPost post = new HttpPost(url);
 						post.setHeader("Content-Type",
 								"application/x-www-form-urlencoded; charset=utf-8");
-						JSONObject json = new JSONObject(rawParams);
+						JSONObject json = new JSONObject(map);
 						post.getParams().setIntParameter(
 								CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);
 						post.setEntity(new StringEntity(json.toString(),
 								HTTP.UTF_8));
 
-//						Log.i("sendjsonstring", json.toString());
+						Log.i("sendjsonstring", json.toString());
 
-//						// 发送POST请求
-//						HttpResponse httpResponse;
-//						httpResponse = httpClient.execute(post);
-//						if (httpResponse.getStatusLine().getStatusCode() == 200) {
-//							// 获取服务器响应字符串
-//							result = EntityUtils.toString(httpResponse
-//									.getEntity());
-//							return result;
-//						} else {
-//							return null;
-//						}
-						
-						Map<String,String> m = new HashMap<String, String>();
-						m.put("lat", ""+lat); lat = lat + 0.0001;
-						m.put("lng", ""+lng);  lng = lng + 0.0001;
-						m.put("desc", "zzzzzzaaa");
-						m.put("flag", "true");
-						JSONObject js = new JSONObject(m);
-						return js.toString();
-						
+						// 发送POST请求
+						HttpResponse httpResponse;
+						httpResponse = httpClient.execute(post);
+						if (httpResponse.getStatusLine().getStatusCode() == 200) {
+							// 获取服务器响应字符串
+							result = EntityUtils.toString(httpResponse
+									.getEntity());
+							return result;
+						}
+						return null;
+
+						// Map<String,String> m = new HashMap<String, String>();
+						// m.put("lat", ""+lat); lat = lat + 0.0001;
+						// m.put("lng", ""+lng); lng = lng + 0.0001;
+						// m.put("desc", "zzzzzzaaa");
+						// m.put("flag", "true");
+						// JSONObject js = new JSONObject(m);
+						// return js.toString();
+
 					}
 				});
 		new Thread(task).start();
-		Log.i("task.get() ", task.get()+"")  ;
+		Log.i("task.get() ", task.get() + "");
 		return task.get();
+	}
+
+	public static String post(final String url, final Map<String, String> map)
+			throws Exception {
+		HttpPost post = new HttpPost(url);
+		post.setHeader("Content-Type",
+				"application/x-www-form-urlencoded; charset=utf-8");
+		JSONObject json = new JSONObject(map);
+		post.getParams().setIntParameter(
+				CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);
+		post.setEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+
+		Log.i("sendjsonstring", json.toString());
+
+		// 发送POST请求
+		HttpResponse httpResponse;
+		httpResponse = httpClient.execute(post);
+		if (httpResponse.getStatusLine().getStatusCode() == 200) {
+			// 获取服务器响应字符串
+			result = EntityUtils.toString(httpResponse.getEntity());
+			return result;
+		}
+		return null;
 	}
 }
