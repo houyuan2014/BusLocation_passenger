@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class BusFragment extends Fragment {
+public class BusSearchFragment extends Fragment {
 	TextView tv_show;
 
 	@Override

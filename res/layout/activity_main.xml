@@ -26,30 +26,7 @@
             android:button="@null"
             android:checked="true"
             android:gravity="center_horizontal"
-            android:text="班车位置"
-            android:textSize="20sp" />
-
-        <RadioButton
-            android:id="@+id/rg_bus"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center_horizontal"
-            android:text="查询公交"
-            android:textSize="20sp" />
-
-        <RadioButton
-            android:id="@+id/rg_poi"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center_horizontal"
-            android:paddingTop="2dp"
-            android:text="查询周边"
+            android:text="定位"
             android:textSize="20sp" />
 
         <RadioButton
@@ -60,7 +37,19 @@
             android:layout_weight="1"
             android:button="@null"
             android:gravity="center_horizontal"
-            android:text="班车预订"
+            android:text="预订"
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/rg_me"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center_horizontal"
+            android:paddingTop="2dp"
+            android:text="我"
             android:textSize="20sp" />
     </RadioGroup>
 

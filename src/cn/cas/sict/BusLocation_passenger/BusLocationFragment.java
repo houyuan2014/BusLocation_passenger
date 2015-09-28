@@ -20,11 +20,10 @@ import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,13 +34,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.view.View.OnClickListener;
 
-public class BusLocationFragment extends Fragment implements OnClickListener,
+public class BusLocationFragment extends Fragment implements
 		AMapLocationListener {
 
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
 			123.43, 41.80), 10, 0, 0);
-	Button btUserLoc;
+	Button btUserLoc, btBusLoc;
 	AMap map;
 	MapView mapView;
 	LatLng userLatLng, busLatLng;
@@ -72,8 +72,9 @@ public class BusLocationFragment extends Fragment implements OnClickListener,
 			if (msg.what == 3) { // 执行定时任务
 				requestDriverLoc();// 发送HTTp请求
 				if (!hasMoveCamera) {
-					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-							busLatLng, 15));
+					map.animateCamera(CameraUpdateFactory.newLatLngBounds(
+							new LatLngBounds.Builder().include(busLatLng)
+									.include(userLatLng).build(), 10, 10, 5));
 					hasMoveCamera = true;
 				}
 			}
@@ -108,14 +109,26 @@ public class BusLocationFragment extends Fragment implements OnClickListener,
 		View rootView = inflater.inflate(R.layout.fragment_bus_location,
 				container, false);
 		btUserLoc = (Button) rootView.findViewById(R.id.bt_userloc);
-//		btUserLoc.setOnKeyListener(new OnKeyListener() {
-//			
-//			@Override
-//			public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
-//				// TODO Auto-generated method stub
-//				return false;
-//			}
-//		});
+		btUserLoc.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng,
+						16));
+			}
+		});
+		btBusLoc = (Button) rootView.findViewById(R.id.bt_busloc);
+		btBusLoc.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				map.animateCamera(CameraUpdateFactory.newLatLngZoom(busLatLng,
+						16));
+			}
+		});
+
 		mapView = (MapView) rootView.findViewById(R.id.map);
 		mapView.onCreate(savedInstanceState);
 		initMap();
@@ -291,7 +304,7 @@ public class BusLocationFragment extends Fragment implements OnClickListener,
 		 * 所以同一个定时器任务只能被放置一次
 		 */
 		timerTask = new MyTimerTask(); // 新建一个任务（必须）
-		timer.scheduleAtFixedRate(timerTask, 3000, 3000);
+		timer.scheduleAtFixedRate(timerTask, 0, 3000);
 	}
 
 	/**
@@ -303,12 +316,6 @@ public class BusLocationFragment extends Fragment implements OnClickListener,
 			mapLocationManager.destroy();
 		}
 		mapLocationManager = null;
-	}
-
-	@Override
-	public void onClick(DialogInterface arg0, int arg1) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
