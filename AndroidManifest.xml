@@ -30,12 +30,21 @@
             android:value="cea83ecf05f65f5c16f19600245ac984" />
 
         <activity
-            android:name="cn.cas.sict.BusLocation_passenger.MainActivity"
-            android:label="@string/app_name" >
+            android:name="cn.cas.sict.BusLocation_passenger.LoginActivity"
+            android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.ZhuceActivity"
+            android:label="@string/title_activity_zhuce" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.MainActivity"
+            android:label="@string/app_name" >
         </activity>
     </application>
 

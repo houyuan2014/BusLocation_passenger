@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BusLocation_passenger</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">班车定位</string>
+    <string name="title_activity_zhuce">注册</string>
+    <string name="title_activity_login">登录</string>
 
 </resources>

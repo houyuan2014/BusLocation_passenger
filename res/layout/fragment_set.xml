@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+   	android:layout_marginLeft="2dp"
+   	android:layout_marginRight="2dp"
     android:divider="@drawable/separator_vertical"
     android:orientation="vertical"
     android:showDividers="middle" >
@@ -17,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="phone" />
+            android:text="手机" />
 
         <TextView
             android:id="@+id/tv_phone"
@@ -39,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="username" />
+            android:text="昵称" />
 
         <EditText
             android:id="@+id/et_username"
@@ -60,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="passwd" />
+            android:text="密码" />
 
         <EditText
             android:id="@+id/et_passwd"
@@ -80,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="left"
-            android:text="route:" />
+            android:text="路线 ：" />
 
         <RadioGroup
             android:id="@+id/rg_route"
@@ -117,6 +119,10 @@
         android:layout_gravity="center_horizontal"
         android:text="保存" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -126,14 +132,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:text="feedback" />
+            android:text="反馈" />
 
         <EditText
             android:id="@+id/et_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="input what you want to say"
-            android:minLines="6" />
+            android:minLines="3" />
     </LinearLayout>
 
     <Button

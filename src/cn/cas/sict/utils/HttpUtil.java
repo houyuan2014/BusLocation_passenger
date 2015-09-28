@@ -70,13 +70,7 @@ public class HttpUtil {
 						}
 						return null;
 
-						// Map<String,String> m = new HashMap<String, String>();
-						// m.put("lat", ""+lat); lat = lat + 0.0001;
-						// m.put("lng", ""+lng); lng = lng + 0.0001;
-						// m.put("desc", "zzzzzzaaa");
-						// m.put("flag", "true");
-						// JSONObject js = new JSONObject(m);
-						// return js.toString();
+
 
 					}
 				});
@@ -98,13 +92,21 @@ public class HttpUtil {
 		Log.i("sendjsonstring", json.toString());
 
 		// 发送POST请求
-		HttpResponse httpResponse;
-		httpResponse = httpClient.execute(post);
-		if (httpResponse.getStatusLine().getStatusCode() == 200) {
-			// 获取服务器响应字符串
-			result = EntityUtils.toString(httpResponse.getEntity());
-			return result;
-		}
-		return null;
+//		HttpResponse httpResponse;
+//		httpResponse = httpClient.execute(post);
+//		if (httpResponse.getStatusLine().getStatusCode() == 200) {
+//			// 获取服务器响应字符串
+//			result = EntityUtils.toString(httpResponse.getEntity());
+//			return result;
+//		}
+//		return null;
+		
+		 Map<String,String> m = new HashMap<String, String>();
+		 m.put("lat", ""+lat); lat = lat + 0.0001;
+		 m.put("lng", ""+lng); lng = lng + 0.0001;
+		 m.put("desc", "zzzzzzaaa");
+		 m.put("flag", "true");
+		 JSONObject js = new JSONObject(m);
+		 return js.toString();
 	}
 }

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#3305">
+    
+<TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:stretchColumns="0,3"
+         >
+         <TableRow 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+             <TextView />
+             <TextView 
+                 android:text="手机号："
+                 android:textSize="24sp"
+                 android:id="@+id/text1"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"/>
+                 <EditText
+                     android:id="@+id/tel"
+                     android:textSize="24sp"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:minWidth="200sp"
+                     android:inputType="phone"/>
+             <TextView/>
+         </TableRow>
+         <TableRow 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+             <TextView />
+             <TextView 
+                 android:text="密  码："
+                 android:id="@+id/text2"
+                 android:textSize="24sp"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"/>
+             <EditText 
+                 android:id="@+id/psw"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textSize="24sp"
+                 android:inputType="textPassword"/>
+             <TextView />
+         </TableRow>
+         <TableRow 
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+             <TextView />
+             <TextView 
+                 android:text="确认密码："
+                 android:id="@+id/text3"
+                 android:textSize="24sp"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"/>
+             <EditText 
+                 android:id="@+id/psw1"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textSize="24sp"
+                 android:inputType="textPassword"/>
+             <TextView />
+         </TableRow>
+         <TableRow 
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+            android:layout_gravity="right">
+             <TextView />
+             <Button
+               android:id="@+id/button1"
+               android:text="注册"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+              
+              <TextView /> 
+         </TableRow>
+        
+    </TableLayout>
+</LinearLayout>
