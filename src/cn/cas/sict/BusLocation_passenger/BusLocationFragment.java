@@ -34,6 +34,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.view.View.OnClickListener;
 
 public class BusLocationFragment extends Fragment implements
@@ -46,12 +47,11 @@ public class BusLocationFragment extends Fragment implements
 	MapView mapView;
 	LatLng userLatLng, busLatLng;
 	Map<String, String> userLocMap;
-	String driverLocDes, flag;
+	String busLocDes, flag;
 	int a = 1;
 	MarkerOptions driverMarkerOption, userMarkerOption;
 	Marker drvierMarker, myMarker;
 	LocationManagerProxy mapLocationManager;
-	private boolean isUserlocValid, hasMoveCamera;
 	Timer timer;; // 定义定时器、定时器任务及Handler句柄
 	MyTimerTask timerTask;
 	MyHandler handler;
@@ -61,8 +61,6 @@ public class BusLocationFragment extends Fragment implements
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			for (; !isUserlocValid;)
-				;
 			handler.sendEmptyMessage(3);
 		}
 	};
@@ -71,12 +69,12 @@ public class BusLocationFragment extends Fragment implements
 		public void handleMessage(Message msg) {
 			if (msg.what == 3) { // 执行定时任务
 				requestDriverLoc();// 发送HTTp请求
-//				if (!hasMoveCamera) {
-//					map.animateCamera(CameraUpdateFactory.newLatLngBounds(
-//							new LatLngBounds.Builder().include(busLatLng)
-//									.include(userLatLng).build(), 10, 10, 5));
-//					hasMoveCamera = true;
-//				}
+				// if (!hasMoveCamera) {
+				// map.animateCamera(CameraUpdateFactory.newLatLngBounds(
+				// new LatLngBounds.Builder().include(busLatLng)
+				// .include(userLatLng).build(), 10, 10, 5));
+				// hasMoveCamera = true;
+				// }
 			}
 
 		}
@@ -92,8 +90,6 @@ public class BusLocationFragment extends Fragment implements
 		super.onCreate(savedInstanceState);
 		timer = new Timer();
 		handler = new MyHandler();
-		isUserlocValid = false;
-		hasMoveCamera = false;
 		userLocMap = new HashMap<String, String>();
 		driverMarkerOption = new MarkerOptions();
 		userMarkerOption = new MarkerOptions();
@@ -128,6 +124,7 @@ public class BusLocationFragment extends Fragment implements
 				if (busLatLng != null) {
 					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
 							busLatLng, 16));
+					drvierMarker.showInfoWindow();
 				}
 				Log.i("test", "buslatlng is null");
 			}
@@ -197,8 +194,7 @@ public class BusLocationFragment extends Fragment implements
 			userLocMap.put("lat", String.valueOf(userLatLng.latitude));
 			userLocMap.put("lng", String.valueOf(userLatLng.longitude));
 			userLocMap.put("rout", "1");
-			isUserlocValid = true;
-			Log.i("test", "userLatLng   "+userLocMap.toString());
+			Log.i("test", "userLatLng   " + userLocMap.toString());
 		} else {
 			Log.e("AmapErr", "Location ERR:"
 					+ amapLocation.getAMapException().getErrorCode());
@@ -281,18 +277,19 @@ public class BusLocationFragment extends Fragment implements
 	private void requestDriverLoc() {
 		// TODO Auto-generated method stub
 		try {
-			JSONObject jsonObj = new JSONObject(HttpUtil.post("url", userLocMap));
+			JSONObject jsonObj = new JSONObject(
+					HttpUtil.post("url", userLocMap));
 			if (jsonObj.get("flag").equals("true")) {
-				driverLocDes = jsonObj.getString("desc");
+				busLocDes = jsonObj.getString("desc");
 				busLatLng = new LatLng(
 						Double.valueOf(jsonObj.getString("lat")),
 						Double.valueOf(jsonObj.getDouble("lng")));
-				drvierMarker.setTitle(driverLocDes);
+				drvierMarker.setTitle(busLocDes);
 				drvierMarker.setPosition(busLatLng);
-				drvierMarker.showInfoWindow();
-				Log.i("test", "receivejson   "+jsonObj.toString());
+				getActivity().setTitle(busLocDes);
+				Log.i("test", "receivejson   " + jsonObj.toString());
 				Log.i("test", Thread.currentThread() + " a " + a++);
-			}else{
+			} else {
 				ToastUtil.show(getActivity(), "班车未上传位置");
 			}
 		} catch (JSONException e) {

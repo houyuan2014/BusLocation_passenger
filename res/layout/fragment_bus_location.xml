@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:orientation="vertical"
-        android:paddingTop="10dp" >
+        android:paddingTop="20dp" >
 
         <Button
             android:id="@+id/bt_userloc"

@@ -2,83 +2,136 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:divider="@drawable/separator_vertical"
     android:orientation="vertical"
-    android:background="#3305">
-    
-<TableLayout
+    android:showDividers="middle" >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <TableLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center_vertical"
-        android:stretchColumns="0,3"
-         >
-         <TableRow 
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
-             <TextView />
-             <TextView 
-                 android:text="手机号："
-                 android:textSize="24sp"
-                 android:id="@+id/text1"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"/>
-                 <EditText
-                     android:id="@+id/tel"
-                     android:textSize="24sp"
-                     android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:minWidth="200sp"
-                     android:inputType="phone"/>
-             <TextView/>
-         </TableRow>
-         <TableRow 
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
-             <TextView />
-             <TextView 
-                 android:text="密  码："
-                 android:id="@+id/text2"
-                 android:textSize="24sp"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"/>
-             <EditText 
-                 android:id="@+id/psw"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:textSize="24sp"
-                 android:inputType="textPassword"/>
-             <TextView />
-         </TableRow>
-         <TableRow 
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
-             <TextView />
-             <TextView 
-                 android:text="确认密码："
-                 android:id="@+id/text3"
-                 android:textSize="24sp"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"/>
-             <EditText 
-                 android:id="@+id/psw1"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:textSize="24sp"
-                 android:inputType="textPassword"/>
-             <TextView />
-         </TableRow>
-         <TableRow 
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-            android:layout_gravity="right">
-             <TextView />
-             <Button
-               android:id="@+id/button1"
-               android:text="注册"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"/>
-              
-              <TextView /> 
-         </TableRow>
-        
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:stretchColumns="0,3" >
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手 机 号  :" />
+
+            <EditText
+                android:id="@+id/tel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:minWidth="200sp" />
+
+            <TextView />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView />
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="密     码   :" />
+
+            <EditText
+                android:id="@+id/psw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+            <TextView />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确认密码:" />
+
+            <EditText
+                android:id="@+id/psw1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+            <TextView />
+        </TableRow>
     </TableLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <RadioGroup
+        android:id="@+id/rg_logup_route"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rb_route1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="一号线"
+            android:textColor="#500" />
+
+        <RadioButton
+            android:id="@+id/rb_route2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="二号线"
+            android:textColor="#050" />
+
+        <RadioButton
+            android:id="@+id/rb_route3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="三号线"
+            android:textColor="#005" />
+
+        <RadioButton
+            android:id="@+id/rb_route4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="四号线"
+            android:textColor="#000" />
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
+    <Button
+        android:id="@+id/bt_logup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="注册" />
+
 </LinearLayout>
