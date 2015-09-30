@@ -15,6 +15,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
@@ -24,10 +25,14 @@ import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 
+import android.app.Service;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,14 +48,19 @@ public class BusLocationFragment extends Fragment implements
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
 			41.79676, 123.429096), 11, 0, 0);
 	Button btUserLoc, btBusLoc, bt_traffic;
+	Vibrator vibrator;
+	SharedPreferences sP;
+	long vibrateTime;
+	float remindDistance;
 	AMap map;
 	MapView mapView;
 	LatLng userLatLng, busLatLng;
-	Map<String, String> userLocMap;
 	String busLocDes, flag;
+	boolean hasVibrate;
 	int a = 1;
-	MarkerOptions driverMarkerOption, userMarkerOption;
-	Marker drvierMarker, myMarker;
+	Map<String, String> userLocMap;
+	MarkerOptions busMarkerOption, userMarkerOption;
+	Marker busMarker, userMarker;
 	LocationManagerProxy mapLocationManager;
 	Timer timer;; // 定义定时器、定时器任务及Handler句柄
 	MyTimerTask timerTask;
@@ -68,13 +78,7 @@ public class BusLocationFragment extends Fragment implements
 	class MyHandler extends Handler {
 		public void handleMessage(Message msg) {
 			if (msg.what == 3) { // 执行定时任务
-				requestDriverLoc();// 发送HTTp请求
-				// if (!hasMoveCamera) {
-				// map.animateCamera(CameraUpdateFactory.newLatLngBounds(
-				// new LatLngBounds.Builder().include(busLatLng)
-				// .include(userLatLng).build(), 10, 10, 5));
-				// hasMoveCamera = true;
-				// }
+				requestBusLoc();// 发送HTTp请求
 			}
 
 		}
@@ -90,9 +94,16 @@ public class BusLocationFragment extends Fragment implements
 		super.onCreate(savedInstanceState);
 		timer = new Timer();
 		handler = new MyHandler();
+		vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+		sP = getActivity().getSharedPreferences("userconfig", Context.MODE_PRIVATE);
+		vibrateTime = sP.getLong("vibratetime", 3000);//ms,震动时间
+		remindDistance = sP.getFloat("reminddistance", 1000);//临近距离
 		userLocMap = new HashMap<String, String>();
-		driverMarkerOption = new MarkerOptions();
+		busMarkerOption = new MarkerOptions();
 		userMarkerOption = new MarkerOptions();
+		userLatLng = null;
+		busLatLng = null;
+		hasVibrate = false;
 	}
 
 	// 每次创建，绘制该fragment的view组件时回调该方法
@@ -124,7 +135,7 @@ public class BusLocationFragment extends Fragment implements
 				if (busLatLng != null) {
 					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
 							busLatLng, 16));
-					drvierMarker.showInfoWindow();
+					busMarker.showInfoWindow();
 				}
 				Log.i("test", "buslatlng is null");
 			}
@@ -162,8 +173,8 @@ public class BusLocationFragment extends Fragment implements
 			// 设置默认定位按钮是否显示
 			// myMap.setMyLocationEnabled(true);//
 			// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
-			drvierMarker = map.addMarker(driverMarkerOption);
-			myMarker = map.addMarker(userMarkerOption);
+			busMarker = map.addMarker(busMarkerOption);
+			userMarker = map.addMarker(userMarkerOption);
 		}
 		if (mapLocationManager == null) {
 			mapLocationManager = LocationManagerProxy
@@ -190,7 +201,8 @@ public class BusLocationFragment extends Fragment implements
 			// mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
 			userLatLng = new LatLng(amapLocation.getLatitude(),
 					amapLocation.getLongitude());
-			myMarker.setPosition(userLatLng);
+			userMarker.setPosition(userLatLng);
+
 			userLocMap.put("lat", String.valueOf(userLatLng.latitude));
 			userLocMap.put("lng", String.valueOf(userLatLng.longitude));
 			userLocMap.put("rout", "1");
@@ -274,7 +286,7 @@ public class BusLocationFragment extends Fragment implements
 
 	}
 
-	private void requestDriverLoc() {
+	private void requestBusLoc() {
 		// TODO Auto-generated method stub
 		try {
 			JSONObject jsonObj = new JSONObject(
@@ -284,9 +296,18 @@ public class BusLocationFragment extends Fragment implements
 				busLatLng = new LatLng(
 						Double.valueOf(jsonObj.getString("lat")),
 						Double.valueOf(jsonObj.getDouble("lng")));
-				drvierMarker.setTitle(busLocDes);
-				drvierMarker.setPosition(busLatLng);
+				busMarker.setTitle(busLocDes);
+				busMarker.setPosition(busLatLng);
 				getActivity().setTitle(busLocDes);
+				if(hasVibrate == false && userLatLng != null && busLatLng != null){
+					float d = AMapUtils.calculateLineDistance(userLatLng, busLatLng);
+					Log.i("zzz", "distance  "+d);
+					if(d <= remindDistance){
+						vibrator.vibrate(vibrateTime);
+						vibrator.cancel();
+						hasVibrate = true;
+					}
+				}
 				Log.i("test", "receivejson   " + jsonObj.toString());
 				Log.i("test", Thread.currentThread() + " a " + a++);
 			} else {
