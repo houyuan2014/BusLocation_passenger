@@ -20,6 +20,8 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		sharedpreferences = getSharedPreferences("userconfig",
 				MODE_PRIVATE);
+		editor = sharedpreferences.edit();
+		editor.putBoolean("hasvibrate", false).commit(); //必须要commit()才能生效
 		Button zhuce = (Button) findViewById(R.id.bt_logup);
 		zhuce.setOnClickListener(new View.OnClickListener() {
 

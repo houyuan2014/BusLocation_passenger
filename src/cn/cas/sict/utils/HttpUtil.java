@@ -30,8 +30,8 @@ public class HttpUtil {
 	public static HttpClient httpClient = new DefaultHttpClient();
 	public static final String BASE_URL = "http://Todolist.f3322.net/JSON_Service/";
 	static String result;
-	static Double lat = 41.7;
-	static Double lng = 123.6;
+	static Double lat = 41.74411;
+	static Double lng = 123.546;
 
 	/**
 	 * @param url
@@ -102,9 +102,10 @@ public class HttpUtil {
 //		return null;
 		
 		 Map<String,String> m = new HashMap<String, String>();
-		 m.put("lat", ""+lat); lat = lat + 0.0001;
+		 m.put("lat", ""+lat);
 		 m.put("lng", ""+lng); lng = lng + 0.0001;
-		 m.put("desc", "zzzzzzaaa");
+		 m.put("desc", "在中关村附近");
+		 m.put("time", "30分钟");
 		 m.put("flag", "true");
 		 JSONObject js = new JSONObject(m);
 		 return js.toString();

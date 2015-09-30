@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.amap.api.maps2d.MapView
-        android:id="@+id/map"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:orientation="vertical"
-        android:paddingTop="20dp" >
+        <com.amap.api.maps2d.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        <Button
-            android:id="@+id/bt_userloc"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我的位置" />
+            android:orientation="vertical"
+            android:paddingTop="20dp" >
 
-        <Button
-            android:id="@+id/bt_busloc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/bt_userloc"
-            android:text="班车位置" />
+            <Button
+                android:id="@+id/bt_userloc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我的位置" />
 
-        <Button
-            android:id="@+id/bt_traffic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="显示路况" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/bt_busloc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bt_userloc"
+                android:text="班车位置" />
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/bt_traffic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="显示路况" />
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

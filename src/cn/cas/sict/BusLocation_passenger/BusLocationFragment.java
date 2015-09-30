@@ -50,7 +50,7 @@ public class BusLocationFragment extends Fragment implements
 	Button btUserLoc, btBusLoc, bt_traffic;
 	Vibrator vibrator;
 	SharedPreferences sP;
-	long vibrateTime;
+	SharedPreferences.Editor editor;
 	float remindDistance;
 	AMap map;
 	MapView mapView;
@@ -94,16 +94,16 @@ public class BusLocationFragment extends Fragment implements
 		super.onCreate(savedInstanceState);
 		timer = new Timer();
 		handler = new MyHandler();
-		vibrator = (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-		sP = getActivity().getSharedPreferences("userconfig", Context.MODE_PRIVATE);
-		vibrateTime = sP.getLong("vibratetime", 3000);//ms,震动时间
-		remindDistance = sP.getFloat("reminddistance", 1000);//临近距离
+		vibrator = (Vibrator) getActivity().getSystemService(
+				Service.VIBRATOR_SERVICE);
+		sP = getActivity().getSharedPreferences("userconfig",
+				Context.MODE_PRIVATE);
+		editor = sP.edit();
 		userLocMap = new HashMap<String, String>();
 		busMarkerOption = new MarkerOptions();
 		userMarkerOption = new MarkerOptions();
 		userLatLng = null;
 		busLatLng = null;
-		hasVibrate = false;
 	}
 
 	// 每次创建，绘制该fragment的view组件时回调该方法
@@ -135,7 +135,7 @@ public class BusLocationFragment extends Fragment implements
 				if (busLatLng != null) {
 					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
 							busLatLng, 16));
-					busMarker.showInfoWindow();
+					// busMarker.showInfoWindow();
 				}
 				Log.i("test", "buslatlng is null");
 			}
@@ -168,25 +168,14 @@ public class BusLocationFragment extends Fragment implements
 		if (map == null) {
 			map = mapView.getMap();
 			map.moveCamera(CameraUpdateFactory.newCameraPosition(SHENYANG));
-			// myMap.setLocationSource(this);// 设置定位监听
-			// myMap.getUiSettings().setMyLocationButtonEnabled(true);//
-			// 设置默认定位按钮是否显示
-			// myMap.setMyLocationEnabled(true);//
-			// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
 			busMarker = map.addMarker(busMarkerOption);
 			userMarker = map.addMarker(userMarkerOption);
 		}
 		if (mapLocationManager == null) {
 			mapLocationManager = LocationManagerProxy
 					.getInstance(getActivity());
-			// 此方法为每隔固定时间会发起一次定位请求，为了减少电量消耗或网络流量消耗，
-			// 注意设置合适的定位时间的间隔（最小间隔支持为2000ms），并且在合适时间调用removeUpdates()方法来取消定位请求
-			// 在定位结束后，在合适的生命周期调用destroy()方法
-			// 其中如果间隔时间为-1，则定位只定一次
-			// 在单次定位情况下，定位无论成功与否，都无需调用removeUpdates()方法移除请求，定位sdk内部会移除
 			mapLocationManager.requestLocationData(
 					LocationProviderProxy.AMapNetwork, 10 * 1000, 10, this);
-			// mAMapLocationManager.setGpsEnable(false);
 		}
 
 	}
@@ -198,11 +187,9 @@ public class BusLocationFragment extends Fragment implements
 	public void onLocationChanged(AMapLocation amapLocation) {
 		if (amapLocation != null
 				&& amapLocation.getAMapException().getErrorCode() == 0) {
-			// mListener.onLocationChanged(amapLocation);// 显示系统小蓝点
 			userLatLng = new LatLng(amapLocation.getLatitude(),
 					amapLocation.getLongitude());
 			userMarker.setPosition(userLatLng);
-
 			userLocMap.put("lat", String.valueOf(userLatLng.latitude));
 			userLocMap.put("lng", String.valueOf(userLatLng.longitude));
 			userLocMap.put("rout", "1");
@@ -220,8 +207,12 @@ public class BusLocationFragment extends Fragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
+		hasVibrate = sP.getBoolean("hasvibrate", false);
+		remindDistance = sP.getFloat("reminddistance", 1000);// 临近距离
 		mapView.onResume();
 		startMyTimer();
+
+		Log.i("zzz", "hasvibrate" + hasVibrate);
 		Log.i("zzz", "fra onResume....startMyTimer");
 	}
 
@@ -240,6 +231,7 @@ public class BusLocationFragment extends Fragment implements
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
+		vibrator.cancel();
 		timerTask.cancel();
 		timer.purge();
 	}
@@ -296,20 +288,28 @@ public class BusLocationFragment extends Fragment implements
 				busLatLng = new LatLng(
 						Double.valueOf(jsonObj.getString("lat")),
 						Double.valueOf(jsonObj.getDouble("lng")));
-				busMarker.setTitle(busLocDes);
 				busMarker.setPosition(busLatLng);
-				getActivity().setTitle(busLocDes);
-				if(hasVibrate == false && userLatLng != null && busLatLng != null){
-					float d = AMapUtils.calculateLineDistance(userLatLng, busLatLng);
-					Log.i("zzz", "distance  "+d);
-					if(d <= remindDistance){
-						vibrator.vibrate(vibrateTime);
-						vibrator.cancel();
+				getActivity().setTitle(
+						busLocDes + "预计" + jsonObj.getString("time") + "到达");
+
+				if (!hasVibrate && userLatLng != null && busLatLng != null) {
+					if (AMapUtils.calculateLineDistance(userLatLng, busLatLng) <= remindDistance) {
+						Log.i("zzz",
+								"distance  "
+										+ AMapUtils.calculateLineDistance(
+												userLatLng, busLatLng));
 						hasVibrate = true;
+						editor.putBoolean("hasvibrate", hasVibrate).commit();
+						Log.i("zzz",
+								"hasVibrate write"
+										+ sP.getBoolean("hasvibrate", false)
+										+ "  " + sP.getAll());
+						vibrator.vibrate(
+								new long[] { 70, 800, 60, 800, 50, 800 }, -1);
 					}
 				}
+
 				Log.i("test", "receivejson   " + jsonObj.toString());
-				Log.i("test", Thread.currentThread() + " a " + a++);
 			} else {
 				ToastUtil.show(getActivity(), "班车未上传位置");
 			}
@@ -321,7 +321,7 @@ public class BusLocationFragment extends Fragment implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Log.i("err", e.toString());
-			ToastUtil.show(getActivity(), "服务器无响应");
+			ToastUtil.show(getActivity(), "异常");
 		}
 	}
 
