@@ -233,6 +233,7 @@ public class BusLocationFragment extends Fragment implements
 		super.onStop();
 		vibrator.cancel();
 		timerTask.cancel();
+		getActivity().setTitle(R.string.app_name);
 		timer.purge();
 	}
 

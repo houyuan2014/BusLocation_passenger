@@ -1,5 +1,11 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,32 +13,40 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 public class SetFragment extends Fragment {
-	TextView tv_phone;
-	EditText et_UserName, et_Feedback;
-	RadioGroup rg_Route;
-	Button bt_Save, bt_back;
-	int routeNum;
-	boolean isRemind;
-	CheckBox checkboxRemind;
-	SharedPreferences sharedPre;
-	SharedPreferences.Editor editor;
+	ListView list;
+	SharedPreferences sP;
+	SimpleAdapter sAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		sharedPre = getActivity().getSharedPreferences("userconfig",
-				getActivity().MODE_PRIVATE);
-		editor = sharedPre.edit();
+		sP = getActivity().getSharedPreferences("userconfig",
+				Context.MODE_PRIVATE);
+		String[] titles = new String[] { "手机号", "姓名", "路线", "提醒", "反馈" };
+		String[] contents = new String[] {
+				sP.getString("phone", ""),
+				sP.getString("name", ""),
+				String.valueOf(sP.getInt("route", 1)),
+				String.valueOf(sP.getBoolean("remind", true)) + " "
+						+ sP.getFloat("reminddistance", 1000), "" };
+		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < titles.length; i++) {
+			Map<String, Object> listItem = new HashMap<String, Object>();
+			listItem.put("title", titles[i]);
+			listItem.put("content", contents[i]);
+			listItems.add(listItem);
+		}
+		Log.i("listItems", listItems.toString());
+		sAdapter = new SimpleAdapter(getActivity(), listItems,
+				R.layout.list_item, new String[] { "title", "content" },
+				new int[] { R.id.item_title, R.id.item_content });
 	}
 
 	@Override
@@ -41,56 +55,26 @@ public class SetFragment extends Fragment {
 		// TODO Auto-generated method stub
 		View rootView = inflater.inflate(R.layout.fragment_set, container,
 				false);
-
-		// 在fragment中获取控件方法
-		et_UserName = (EditText) rootView.findViewById(R.id.et_username);
-		et_UserName.setText(sharedPre.getString("name", "unnamed"));
-		checkboxRemind = (CheckBox) rootView.findViewById(R.id.cb_remind);
-		checkboxRemind.setOnClickListener(new OnClickListener() {
+		list = (ListView) rootView.findViewById(R.id.list);
+		list.setAdapter(sAdapter);
+		list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
 				// TODO Auto-generated method stub
-				isRemind = ((CheckBox) v).isChecked();
-				Log.i("zzz", "isRemind" + isRemind);
-			}
-		});
-		rg_Route = (RadioGroup) rootView.findViewById(R.id.rg_route);
-		rg_Route.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(RadioGroup arg0, int checkedId) {
-				// TODO Auto-generated method stub
-				switch (checkedId) {
-				case R.id.rb_route1:
-					routeNum = 1;
-					Log.i("zzz", "routeNum" + routeNum);
+				switch (position) {
+				case 0:// 手机号
 					break;
-				case R.id.rb_route2:
-					routeNum = 2;
-					Log.i("zzz", "routeNum" + routeNum);
+				case 1:// 姓名
 					break;
-				case R.id.rb_route3:
-					routeNum = 3;
-					Log.i("zzz", "routeNum" + routeNum);
+				case 2:// 路线
 					break;
-				case R.id.rb_route4:
-					routeNum = 4;
-					Log.i("zzz", "routeNum" + routeNum);
+				case 3:// 提醒
+					break;
+				case 4:// 反馈
 					break;
 				}
-			}
-		});
-		bt_Save = (Button) rootView.findViewById(R.id.bt_save_conf);
-		bt_Save.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				editor.putString("name", et_UserName.getText().toString())
-						.putInt("route", routeNum)
-						.putBoolean("remind", isRemind).commit();
-				Log.i("zzz", "" + sharedPre.getString("phone", "null"));
 			}
 		});
 		return rootView;
