@@ -2,97 +2,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:layout_margin="10sp"
     android:orientation="vertical" >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="班车系统欢迎您！"
-        android:textColor="#ccc"
-        android:textSize="24sp" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5sp"
-        android:adjustViewBounds="true"
-        android:maxHeight="240sp"
-        android:maxWidth="240sp"
-        android:src="@drawable/che" />
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="25sp"
+        android:src="@drawable/sict_logo" />
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center_vertical"
-        android:stretchColumns="0,3" >
+    <TextView
+        android:id="@+id/tv_weather"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_margin="10sp" />
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+    <EditText
+        android:id="@+id/tel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="手机号"
+        android:inputType="phone" />
 
-            <TextView />
+    <EditText
+        android:id="@+id/psw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="密码"
+        android:inputType="phone" >
+    </EditText>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="手 机 号  :" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
 
-            <EditText
-                android:id="@+id/tel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:minWidth="200sp" />
+        <Button
+            android:id="@+id/bt_logup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="注册" />
 
-            <TextView />
-        </TableRow>
+        <Button
+            android:id="@+id/bt_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="登录" />
+    </LinearLayout>
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <TextView />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="密     码  :" />
-
-            <EditText
-                android:id="@+id/psw"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
-
-            <TextView />
-        </TableRow>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" >
-
-            <TextView />
-
-            <Button
-                android:id="@+id/bt_logup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="注册" />
-
-            <Button
-                android:id="@+id/bt_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="登录" />
-
-            <TextView />
-        </TableRow>
-"
-    </TableLayout>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|bottom"
+        android:hint="信息工程&amp;先进制造技术研究联盟" />
 
 </LinearLayout>

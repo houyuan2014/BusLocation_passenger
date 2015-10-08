@@ -25,9 +25,10 @@
             android:layout_weight="1"
             android:button="@null"
             android:checked="true"
+            android:drawableTop="@drawable/radio_change"
             android:gravity="center_horizontal"
             android:text="定位"
-            android:textSize="20sp" />
+            android:textColor="@drawable/color" />
 
         <RadioButton
             android:id="@+id/rg_book"
@@ -36,9 +37,10 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:button="@null"
+            android:drawableTop="@drawable/radio_change1"
             android:gravity="center_horizontal"
             android:text="预订"
-            android:textSize="20sp" />
+            android:textColor="@drawable/color" />
 
         <RadioButton
             android:id="@+id/rg_me"
@@ -47,10 +49,11 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:button="@null"
+            android:drawableTop="@drawable/radio_change2"
             android:gravity="center_horizontal"
             android:paddingTop="2dp"
             android:text="我"
-            android:textSize="20sp" />
+            android:textColor="@drawable/color" />
     </RadioGroup>
 
 </LinearLayout>
