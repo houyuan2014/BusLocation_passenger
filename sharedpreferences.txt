@@ -1,11 +1,15 @@
  
  类型		字段名				字段值					备注
- String		phone				18811112222				手机号
- String  	passwd				ccssss45				密码
- int		route				2						路线
+ String		phone										手机号
+ String  	passwd										密码
+ int		route				0						路线号
+ String		routename			一号线					路线名称
+ String		routephone			18811112222				路线手机号
  String 	name				hhd						姓名
  boolean	remind				true					是否提醒
- long		vibratetime			3000		毫秒		提醒时震动时长		已废弃
  floate		reminddistance		1000		米			提醒距离
  boolean	hasvibrate			false					启动置false
  
+ 
+ 
+ 说明 字号统一4种尺寸  12sp 14sp 18sp 22sp

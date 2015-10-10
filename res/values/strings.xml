@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">班车定位</string>
-    <string name="title_activity_zhuce">注册</string>
-    <string name="title_activity_login">登录</string>
+
 
 </resources>

@@ -25,14 +25,14 @@
         android:allowBackup="true"
         android:icon="@drawable/che"
         android:label="@string/app_name"
-         android:theme="@android:style/Theme.Holo.Light">
+        android:theme="@android:style/Theme.Holo.Light" >
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="cea83ecf05f65f5c16f19600245ac984" />
 
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="denglu" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,10 +41,22 @@
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.ZhuceActivity"
-            android:label="@string/title_activity_zhuce" >
+            android:label="zhuce" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.NameActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.RemindActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.AdviceActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

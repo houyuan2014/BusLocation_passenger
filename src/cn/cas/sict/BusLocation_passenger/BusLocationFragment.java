@@ -9,19 +9,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.cas.sict.utils.HttpUtil;
+import cn.cas.sict.utils.SPUtil;
 import cn.cas.sict.utils.ToastUtil;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
+import com.amap.api.maps2d.AMap.OnMapClickListener;
+import com.amap.api.maps2d.AMap.OnMarkerClickListener;
 import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.LatLngBounds;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 
@@ -43,7 +45,7 @@ import android.widget.TextView;
 import android.view.View.OnClickListener;
 
 public class BusLocationFragment extends Fragment implements
-		AMapLocationListener {
+		AMapLocationListener, OnMarkerClickListener, OnClickListener {
 
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
 			41.79676, 123.429096), 11, 0, 0);
@@ -51,15 +53,14 @@ public class BusLocationFragment extends Fragment implements
 	Vibrator vibrator;
 	SharedPreferences sP;
 	SharedPreferences.Editor editor;
-	float remindDistance;
+	float remindDistance, distance;
+	int routeNum;
 	AMap map;
 	MapView mapView;
 	LatLng userLatLng, busLatLng;
-	String busLocDes, flag;
+	//String busLocDes, userDes, flag;
 	boolean hasVibrate;
-	int a = 1;
-	Map<String, String> userLocMap;
-	MarkerOptions busMarkerOption, userMarkerOption;
+	Map<String, Object> userLocMap;
 	Marker busMarker, userMarker;
 	LocationManagerProxy mapLocationManager;
 	Timer timer;; // 定义定时器、定时器任务及Handler句柄
@@ -99,11 +100,10 @@ public class BusLocationFragment extends Fragment implements
 		sP = getActivity().getSharedPreferences("userconfig",
 				Context.MODE_PRIVATE);
 		editor = sP.edit();
-		userLocMap = new HashMap<String, String>();
-		busMarkerOption = new MarkerOptions();
-		userMarkerOption = new MarkerOptions();
+		userLocMap = new HashMap<String, Object>();
 		userLatLng = null;
 		busLatLng = null;
+		distance = -1;
 	}
 
 	// 每次创建，绘制该fragment的view组件时回调该方法
@@ -114,106 +114,33 @@ public class BusLocationFragment extends Fragment implements
 		// 加载布局文件
 		View rootView = inflater.inflate(R.layout.fragment_bus_location,
 				container, false);
-		btUserLoc = (Button) rootView.findViewById(R.id.bt_userloc);
-		btUserLoc.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (userLatLng != null) {
-					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-							userLatLng, 16));
-				}
-			}
-		});
-		btBusLoc = (Button) rootView.findViewById(R.id.bt_busloc);
-		btBusLoc.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (busLatLng != null) {
-					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-							busLatLng, 16));
-					// busMarker.showInfoWindow();
-				}
-				Log.i("test", "buslatlng is null");
-			}
-		});
-		bt_traffic = (Button) rootView.findViewById(R.id.bt_traffic);
-		bt_traffic.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				if (map.isTrafficEnabled()) {
-					bt_traffic.setText("显示路况");
-					map.setTrafficEnabled(false);
-				} else {
-					bt_traffic.setText("隐藏路况");
-					map.setTrafficEnabled(true);
-
-				}
-			}
-		});
-
 		mapView = (MapView) rootView.findViewById(R.id.map);
 		mapView.onCreate(savedInstanceState);
 		initMap();
+		btUserLoc = (Button) rootView.findViewById(R.id.bt_userloc);
+		btBusLoc = (Button) rootView.findViewById(R.id.bt_busloc);
+		bt_traffic = (Button) rootView.findViewById(R.id.bt_traffic);
+		btUserLoc.setOnClickListener(this);
+		btBusLoc.setOnClickListener(this);
+		bt_traffic.setOnClickListener(this);
 		return rootView;
 	}
 
-	private void initMap() {
-		// TODO Auto-generated method stub
-		if (map == null) {
-			map = mapView.getMap();
-			map.moveCamera(CameraUpdateFactory.newCameraPosition(SHENYANG));
-			busMarker = map.addMarker(busMarkerOption);
-			userMarker = map.addMarker(userMarkerOption);
-		}
-		if (mapLocationManager == null) {
-			mapLocationManager = LocationManagerProxy
-					.getInstance(getActivity());
-			mapLocationManager.requestLocationData(
-					LocationProviderProxy.AMapNetwork, 10 * 1000, 10, this);
-		}
-
-	}
-
-	/**
-	 * 定位成功后回调函数
-	 */
-	@Override
-	public void onLocationChanged(AMapLocation amapLocation) {
-		if (amapLocation != null
-				&& amapLocation.getAMapException().getErrorCode() == 0) {
-			userLatLng = new LatLng(amapLocation.getLatitude(),
-					amapLocation.getLongitude());
-			userMarker.setPosition(userLatLng);
-			userLocMap.put("lat", String.valueOf(userLatLng.latitude));
-			userLocMap.put("lng", String.valueOf(userLatLng.longitude));
-			userLocMap.put("rout", "1");
-			Log.i("test", "userLatLng   " + userLocMap.toString());
-		} else {
-			Log.e("AmapErr", "Location ERR:"
-					+ amapLocation.getAMapException().getErrorCode());
-		}
-
-	}
-
-	/**
-	 * 方法必须重写
-	 */
 	@Override
 	public void onResume() {
 		super.onResume();
-		hasVibrate = sP.getBoolean("hasvibrate", false);
-		remindDistance = sP.getFloat("reminddistance", 1000);// 临近距离
+		hasVibrate = sP.getBoolean(SPUtil.SP_HASVIBRATE, false);
+		remindDistance = sP.getFloat(SPUtil.SP_REMINDDISTANCE, 1000);// 临近距离
+		routeNum = sP.getInt(SPUtil.SP_ROUTENUM, 1);
+		userMarker.setTitle(sP.getString(SPUtil.SP_USERNAME, "我"));
+		busMarker.setTitle(sP.getString(SPUtil.SP_ROUTENAME, "test"));
+		busMarker.setSnippet(sP.getString(SPUtil.SP_ROUTEPHONE, "test110"));
 		mapView.onResume();
 		startMyTimer();
 
-		Log.i("zzz", "hasvibrate" + hasVibrate);
-		Log.i("zzz", "fra onResume....startMyTimer");
+		Log.i("test", "sP  " + sP.getAll().toString());
+		Log.i("circle", "fra onResume");
+
 	}
 
 	/**
@@ -224,7 +151,7 @@ public class BusLocationFragment extends Fragment implements
 		super.onPause();
 		mapView.onPause();
 		deactivate();
-		Log.i("zzz", "fra onPause");
+		Log.i("circle", "fra onPause");
 	}
 
 	@Override
@@ -233,86 +160,80 @@ public class BusLocationFragment extends Fragment implements
 		super.onStop();
 		vibrator.cancel();
 		timerTask.cancel();
-		getActivity().setTitle(R.string.app_name);
 		timer.purge();
+		busMarker.destroy();
+		userMarker.destroy();
+		getActivity().setTitle(R.string.app_name);
+		Log.i("circle", "fra onStop");
+
 	}
 
-	/**
-	 * 方法必须重写
-	 */
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		mapView.onDestroy();
 	}
 
-	/**
-	 * 方法必须重写
-	 */
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		mapView.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onLocationChanged(Location amapLocation) {
+	private void initMap() {
 		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
+		if (map == null) {
+			map = mapView.getMap();
+			map.moveCamera(CameraUpdateFactory.newCameraPosition(SHENYANG));
+			map.setOnMarkerClickListener(this);
+			busMarker = map.addMarker(new MarkerOptions());
+			userMarker = map.addMarker(new MarkerOptions());
+		}
+		if (mapLocationManager == null) {
+			mapLocationManager = LocationManagerProxy
+					.getInstance(getActivity());
+			mapLocationManager.requestLocationData(
+					LocationProviderProxy.AMapNetwork, 10 * 1000, 10, this);
+		}
 
 	}
 
 	private void requestBusLoc() {
 		// TODO Auto-generated method stub
+		if (userLatLng != null) {
+			userLocMap.put("flag", true);
+			userLocMap.put("lat", userLatLng.latitude);
+			userLocMap.put("lng", userLatLng.longitude);
+			userLocMap.put("route", routeNum);
+		} else {
+			userLocMap.put("flag", false);
+			userLocMap.put("lat", "");
+			userLocMap.put("lng", "");
+			userLocMap.put("route", routeNum);
+		}
 		try {
 			JSONObject jsonObj = new JSONObject(
 					HttpUtil.post("url", userLocMap));
 			if (jsonObj.get("flag").equals("true")) {
-				busLocDes = jsonObj.getString("desc");
+				//busLocDes = jsonObj.getString("desc");
 				busLatLng = new LatLng(
 						Double.valueOf(jsonObj.getString("lat")),
 						Double.valueOf(jsonObj.getDouble("lng")));
 				busMarker.setPosition(busLatLng);
-				getActivity().setTitle(
-						busLocDes + "预计" + jsonObj.getString("time") + "到达");
+				// busMarker.setSnippet(busLocDes);
 
 				if (!hasVibrate && userLatLng != null && busLatLng != null) {
-					if (AMapUtils.calculateLineDistance(userLatLng, busLatLng) <= remindDistance) {
-						Log.i("zzz",
-								"distance  "
-										+ AMapUtils.calculateLineDistance(
-												userLatLng, busLatLng));
+					distance = AMapUtils.calculateLineDistance(userLatLng,
+							busLatLng);
+					// busMarker.setSnippet(busLocDes + " 相距 " + distance+"米");
+					getActivity().setTitle(" 相距 " + distance + "米");
+					if (distance <= remindDistance) {
 						hasVibrate = true;
-						editor.putBoolean("hasvibrate", hasVibrate).commit();
-						Log.i("zzz",
-								"hasVibrate write"
-										+ sP.getBoolean("hasvibrate", false)
-										+ "  " + sP.getAll());
 						vibrator.vibrate(
-								new long[] { 70, 800, 60, 800, 50, 800 }, -1);
+								new long[] { 10, 600, 60, 600, 60, 600 }, -1);
+						editor.putBoolean("hasvibrate", hasVibrate).commit();
 					}
 				}
 
 				Log.i("test", "receivejson   " + jsonObj.toString());
 			} else {
-				ToastUtil.show(getActivity(), "班车未上传位置");
+				ToastUtil.show(getActivity(), "班车位置不可用,重试中");
+				// timerTask.cancel();
+				// timer.purge();
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -353,4 +274,99 @@ public class BusLocationFragment extends Fragment implements
 		mapLocationManager = null;
 	}
 
+	@Override
+	public boolean onMarkerClick(Marker marker) {
+		// TODO Auto-generated method stub
+		if (marker.isInfoWindowShown()) {
+			marker.hideInfoWindow();
+		} else {
+			marker.showInfoWindow();
+		}
+
+		return true;
+	}
+
+	/**
+	 * 定位成功后回调函数
+	 */
+	@Override
+	public void onLocationChanged(AMapLocation amapLocation) {
+		if (amapLocation != null
+				&& amapLocation.getAMapException().getErrorCode() == 0) {
+			userLatLng = new LatLng(amapLocation.getLatitude(),
+					amapLocation.getLongitude());
+			userMarker.setPosition(userLatLng);
+			userMarker.setSnippet(amapLocation.getRoad());
+		} else {
+			Log.e("AmapErr", "Location ERR:"
+					+ amapLocation.getAMapException().getErrorCode());
+		}
+
+	}
+
+	@Override
+	public void onLocationChanged(Location arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		mapView.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onProviderDisabled(String arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProviderEnabled(String arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.bt_busloc:
+			if (busLatLng != null) {
+				map.animateCamera(CameraUpdateFactory.newLatLngZoom(busLatLng,
+						16));
+				busMarker.showInfoWindow();
+			} else {
+				ToastUtil.show(getActivity(), "获取中");
+			}
+			break;
+		case R.id.bt_userloc:
+			if (userLatLng != null) {
+				map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng,
+						16));
+				userMarker.showInfoWindow();
+			} else {
+				ToastUtil.show(getActivity(), "定位中");
+			}
+			break;
+		case R.id.bt_traffic:
+			if (map.isTrafficEnabled()) {
+				bt_traffic.setText("显示路况");
+				map.setTrafficEnabled(false);
+			} else {
+				bt_traffic.setText("隐藏路况");
+				map.setTrafficEnabled(true);
+
+			}
+			break;
+		}
+
+	}
 }

@@ -1,53 +1,62 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import cn.cas.sict.utils.SPUtil;
 import cn.cas.sict.utils.ToastUtil;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class ZhuceActivity extends Activity {
 	Button btZhuCe;
-	SharedPreferences sharedpreferences;
+	SharedPreferences sP;
 	SharedPreferences.Editor editor;
-	String tel, psw, psw1;
-	RadioGroup rgRoute;
+	String tel, psw, psw1,routeName;
 	int routeNum;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_zhuce);
-		sharedpreferences = getSharedPreferences("userconfig", MODE_PRIVATE);
-		editor = sharedpreferences.edit();
-		rgRoute = (RadioGroup) findViewById(R.id.rg_logup_route);
-		rgRoute.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		sP = getSharedPreferences("userconfig", MODE_PRIVATE);
+		editor = sP.edit();
+		Spinner route = (Spinner) findViewById(R.id.route);
+		route.getSelectedItem();
+		btZhuCe = (Button) findViewById(R.id.bt_logup);
+		String[] routename = new String[] { "一号线", "二号线", "三号线", "四号线" };
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, routename);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		route.setAdapter(adapter);
+		route.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
-			public void onCheckedChanged(RadioGroup arg0, int checkedId) {
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
 				// TODO Auto-generated method stub
-				switch (checkedId) {
-				case R.id.rb_route1:
-					routeNum = 1;
-					break;
-				case R.id.rb_route2:
-					routeNum = 2;
-					break;
-				case R.id.rb_route3:
-					routeNum = 3;
-					break;
-				case R.id.rb_route4:
-					routeNum = 4;
-					break;
-				}
+				routeName = arg0.getItemAtPosition(arg2).toString();
+				Toast.makeText(ZhuceActivity.this, routeName, Toast.LENGTH_SHORT)
+						.show();
+				routeNum = arg2;
+				Log.i("sP", sP.getAll() + "");
 			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
 		});
 		btZhuCe = (Button) findViewById(R.id.bt_logup);
 		btZhuCe.setOnClickListener(new OnClickListener() {
@@ -61,8 +70,11 @@ public class ZhuceActivity extends Activity {
 						.toString();
 				if (validate(tel, psw, psw1)) {
 					if (loguppro(tel, psw)) {
-						editor.putString("phone", tel).putString("passwd", psw)
-								.putInt("route", routeNum).commit();
+						editor.putString(SPUtil.SP_USERPHONE, tel)
+								.putString(SPUtil.SP_USERPASSWD, psw)
+								.putString(SPUtil.SP_USERNAME, "")
+								.putInt(SPUtil.SP_ROUTENUM, routeNum)
+								.putString(SPUtil.SP_ROUTENAME, routeName).commit();
 						Intent intent = new Intent(ZhuceActivity.this,
 								LoginActivity.class);
 						startActivity(intent);

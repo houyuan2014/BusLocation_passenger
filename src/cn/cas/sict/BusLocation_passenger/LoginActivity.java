@@ -1,5 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import cn.cas.sict.utils.SPUtil;
+
 import com.amap.api.location.AMapLocalWeatherForecast;
 import com.amap.api.location.AMapLocalWeatherListener;
 import com.amap.api.location.AMapLocalWeatherLive;
@@ -9,16 +11,20 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
-public class LoginActivity extends Activity implements AMapLocalWeatherListener {
+public class LoginActivity extends Activity implements
+		AMapLocalWeatherListener, OnClickListener {
 	EditText tel, psw;
 	TextView weather;
 	String tel1, psw1;
-	SharedPreferences sharedpreferences;
+	SharedPreferences sP;
 	SharedPreferences.Editor editor;
 	LocationManagerProxy locManagerProxy;
 
@@ -29,46 +35,19 @@ public class LoginActivity extends Activity implements AMapLocalWeatherListener 
 		locManagerProxy = LocationManagerProxy.getInstance(this);
 		locManagerProxy.requestWeatherUpdates(
 				LocationManagerProxy.WEATHER_TYPE_LIVE, this);
-		sharedpreferences = getSharedPreferences("userconfig", MODE_PRIVATE);
-		editor = sharedpreferences.edit();
+		sP = getSharedPreferences("userconfig", MODE_PRIVATE);
+		editor = sP.edit();
 		editor.putBoolean("hasvibrate", false).commit(); // 必须要commit()才能生效
-		weather = (TextView) findViewById(R.id.tv_weather);
-		Button zhuce = (Button) findViewById(R.id.bt_logup);
-		zhuce.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(LoginActivity.this,
-						ZhuceActivity.class);
-				startActivity(intent);
-
-			}
-		});
-
 		tel = (EditText) findViewById(R.id.tel);
 		psw = (EditText) findViewById(R.id.psw);
-		tel.setText(sharedpreferences.getString("phone", ""));
-		psw.setText(sharedpreferences.getString("passwd", ""));
+		tel.setText(sP.getString("phone", ""));
+		psw.setText(sP.getString("passwd", ""));
+		weather = (TextView) findViewById(R.id.tv_weather);
 		Button denglu = (Button) findViewById(R.id.bt_login);
-		denglu.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String tel1 = tel.getText().toString();
-				String psw1 = psw.getText().toString();
-				if (validate(tel1, psw1)) {
-					if (loginpro(tel1, psw1)) {
-						Intent intent1 = new Intent(LoginActivity.this,
-								MainActivity.class);
-						startActivity(intent1);
-						finish();// 启动新的activity后要关闭登录activity，否则用户按返回键将返回登录activity
-					}
-
-				}
-
-			}
-
-		});
+		Button zhuce = (Button) findViewById(R.id.bt_logup);
+		Log.i("sP", sP.getAll() + "");
+		zhuce.setOnClickListener(this);
+		denglu.setOnClickListener(this);
 	}
 
 	/**
@@ -90,6 +69,16 @@ public class LoginActivity extends Activity implements AMapLocalWeatherListener 
 	 */
 	private boolean loginpro(String tel1, String psw1) {
 		// TODO Auto-generated method stub
+
+		// HTTP请求
+
+		if (!tel1.equals(sP.getString(SPUtil.SP_USERPHONE, ""))) {
+			editor.putString(SPUtil.SP_USERPHONE, tel1)
+					.putString(SPUtil.SP_USERPASSWD, psw1)
+					.putString(SPUtil.SP_USERNAME, "")
+					.putInt(SPUtil.SP_ROUTENUM, 0)
+					.putString(SPUtil.SP_ROUTENAME, "").commit();
+		}
 		return true;
 	}
 
@@ -117,6 +106,30 @@ public class LoginActivity extends Activity implements AMapLocalWeatherListener 
 		// TODO Auto-generated method stub
 		super.onPause();
 		locManagerProxy.destroy();
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.bt_logup:
+			Intent intent = new Intent(LoginActivity.this, ZhuceActivity.class);
+			startActivity(intent);
+			break;
+		case R.id.bt_login:
+			String tel1 = tel.getText().toString();
+			String psw1 = psw.getText().toString();
+			if (validate(tel1, psw1)) {
+				if (loginpro(tel1, psw1)) {
+					Intent intent1 = new Intent(LoginActivity.this,
+							MainActivity.class);
+					startActivity(intent1);
+					finish();// 启动新的activity后要关闭登录activity，否则用户按返回键将返回登录activity
+				}
+			}
+			break;
+		}
+
 	}
 
 }

@@ -82,48 +82,14 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="16dp" />
-
-    <RadioGroup
-        android:id="@+id/rg_logup_route"
+    
+    <Spinner 
+        android:id="@+id/route"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:layout_gravity="center"/>
 
-        <RadioButton
-            android:id="@+id/rb_route1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="一号线"
-            android:textColor="#500" />
-
-        <RadioButton
-            android:id="@+id/rb_route2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="二号线"
-            android:textColor="#050" />
-
-        <RadioButton
-            android:id="@+id/rb_route3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="三号线"
-            android:textColor="#005" />
-
-        <RadioButton
-            android:id="@+id/rb_route4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="false"
-            android:text="四号线"
-            android:textColor="#000" />
-    </RadioGroup>
-
-    <View
+     <View
         android:layout_width="match_parent"
         android:layout_height="16dp" />
 

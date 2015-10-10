@@ -31,7 +31,7 @@ public class HttpUtil {
 	public static final String BASE_URL = "http://Todolist.f3322.net/JSON_Service/";
 	static String result;
 	static Double lat = 41.74411;
-	static Double lng = 123.546;
+	static Double lng = 123.506;
 
 	/**
 	 * @param url
@@ -70,8 +70,6 @@ public class HttpUtil {
 						}
 						return null;
 
-
-
 					}
 				});
 		new Thread(task).start();
@@ -79,35 +77,35 @@ public class HttpUtil {
 		return task.get();
 	}
 
-	public static String post(final String url, final Map<String, String> map)
-			throws Exception {
+	public static String post(final String url,
+			final Map<String, Object> userLocMap) throws Exception {
 		HttpPost post = new HttpPost(url);
 		post.setHeader("Content-Type",
 				"application/x-www-form-urlencoded; charset=utf-8");
-		JSONObject json = new JSONObject(map);
+		JSONObject json = new JSONObject(userLocMap);
 		post.getParams().setIntParameter(
 				CoreConnectionPNames.CONNECTION_TIMEOUT, 2000);
 		post.setEntity(new StringEntity(json.toString(), HTTP.UTF_8));
 
-		Log.i("sendjsonstring", json.toString());
+		Log.i("test", "sendjsonstring   " + json.toString());
 
 		// 发送POST请求
-//		HttpResponse httpResponse;
-//		httpResponse = httpClient.execute(post);
-//		if (httpResponse.getStatusLine().getStatusCode() == 200) {
-//			// 获取服务器响应字符串
-//			result = EntityUtils.toString(httpResponse.getEntity());
-//			return result;
-//		}
-//		return null;
-		
-		 Map<String,String> m = new HashMap<String, String>();
-		 m.put("lat", ""+lat);
-		 m.put("lng", ""+lng); lng = lng + 0.0001;
-		 m.put("desc", "在中关村附近");
-		 m.put("time", "30分钟");
-		 m.put("flag", "true");
-		 JSONObject js = new JSONObject(m);
-		 return js.toString();
+		// HttpResponse httpResponse;
+		// httpResponse = httpClient.execute(post);
+		// if (httpResponse.getStatusLine().getStatusCode() == 200) {
+		// // 获取服务器响应字符串
+		// result = EntityUtils.toString(httpResponse.getEntity());
+		// return result;
+		// }
+		// return null;
+
+		Map<String, String> m = new HashMap<String, String>();
+		m.put("lat", "" + lat);
+		m.put("lng", "" + lng);
+		lng = lng + 0.001;
+		m.put("desc", "在中关村附近");
+		m.put("flag", "true");
+		JSONObject js = new JSONObject(m);
+		return js.toString();
 	}
 }
