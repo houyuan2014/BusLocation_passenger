@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -32,7 +32,7 @@
 
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.LoginActivity"
-            android:label="denglu" >
+            android:label="登录" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,24 +41,27 @@
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.ZhuceActivity"
-            android:label="zhuce" >
+            android:label="注册" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.MainActivity"
-            android:label="@string/app_name" >
+            android:label="" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.NameActivity"
-            android:label="@string/app_name" >
+            android:label="姓名" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.RemindActivity"
-            android:label="@string/app_name" >
+            android:label="提醒" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.AdviceActivity"
-            android:label="@string/app_name" >
+            android:label="建议" >
         </activity>
+
+        <service android:name=".MyService" >
+        </service>
     </application>
 
 </manifest>

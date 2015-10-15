@@ -9,42 +9,41 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class AdviceActivity extends Activity {
-    Button tijiao;
-    String yijian;
+	Button tijiao;
+	String yijian;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_advice);
-		final EditText advice=(EditText)findViewById(R.id.advice);
-		tijiao=(Button)findViewById(R.id.commit);
-		tijiao.setOnClickListener(new OnClickListener(){
+		final EditText advice = (EditText) findViewById(R.id.advice);
+		tijiao = (Button) findViewById(R.id.commit);
+		tijiao.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				yijian=advice.getText().toString();
-				if(!"".equals(yijian)){
-				advice.setText(""); 
-				
-				
-				//HTTP请求
-				
-				
-			    finish();
-				}else{
-					Toast.makeText(AdviceActivity.this, "请输入内容", Toast.LENGTH_SHORT).show();
+				yijian = advice.getText().toString();
+				if (!"".equals(yijian)) {
+					advice.setText("");
+
+					// HTTP请求
+
+					finish();
+				} else {
+					Toast.makeText(AdviceActivity.this, "请输入内容",
+							Toast.LENGTH_SHORT).show();
 				}
 			}
-			
+
 		});
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.advice, menu);
-//		return true;
-//	}
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// // Inflate the menu; this adds items to the action bar if it is present.
+	// getMenuInflater().inflate(R.menu.advice, menu);
+	// return true;
+	// }
 
 }

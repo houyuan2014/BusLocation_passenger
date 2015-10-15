@@ -82,11 +82,11 @@ public class SetFragment extends Fragment {
 		// TODO Auto-generated method stub
 		String phone = sP.getString(SPUtil.SP_USERPHONE, "userphone");
 		String name = sP.getString(SPUtil.SP_USERNAME, "username");
-		String routename = sP.getString(SPUtil.SP_ROUTENAME, "routename");
+		String routename = sP.getString(SPUtil.SP_ROUTENAME, "四号线");
 		String remindStr = "关";
 		if (sP.getBoolean("remind", false)) {
-			remindStr = "开"
-					+ String.valueOf(sP.getFloat("reminddistance", 1000));
+			remindStr = String.valueOf(sP.getFloat("reminddistance", 1500))
+					+ "米";
 		}
 		String[] titles = new String[] { "手机号", "姓名", "路线", "提醒", "反馈" };
 		String[] contents = new String[] { phone, name, routename, remindStr,

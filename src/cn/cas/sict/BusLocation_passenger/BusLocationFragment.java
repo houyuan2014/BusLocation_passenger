@@ -34,7 +34,9 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.os.Vibrator;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,6 +51,7 @@ public class BusLocationFragment extends Fragment implements
 
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
 			41.79676, 123.429096), 11, 0, 0);
+	private WakeLock wakeLock = null;
 	Button btUserLoc, btBusLoc, bt_traffic;
 	Vibrator vibrator;
 	SharedPreferences sP;
@@ -58,7 +61,7 @@ public class BusLocationFragment extends Fragment implements
 	AMap map;
 	MapView mapView;
 	LatLng userLatLng, busLatLng;
-	//String busLocDes, userDes, flag;
+	// String busLocDes, userDes, flag;
 	boolean hasVibrate;
 	Map<String, Object> userLocMap;
 	Marker busMarker, userMarker;
@@ -133,10 +136,11 @@ public class BusLocationFragment extends Fragment implements
 		remindDistance = sP.getFloat(SPUtil.SP_REMINDDISTANCE, 1000);// 临近距离
 		routeNum = sP.getInt(SPUtil.SP_ROUTENUM, 1);
 		userMarker.setTitle(sP.getString(SPUtil.SP_USERNAME, "我"));
-		busMarker.setTitle(sP.getString(SPUtil.SP_ROUTENAME, "test"));
-		busMarker.setSnippet(sP.getString(SPUtil.SP_ROUTEPHONE, "test110"));
+		busMarker.setTitle(sP.getString(SPUtil.SP_ROUTENAME, "四号线"));
+		busMarker.setSnippet(sP.getString(SPUtil.SP_ROUTEPHONE, "18855665566"));
 		mapView.onResume();
 		startMyTimer();
+		acquireWakeLock();
 
 		Log.i("test", "sP  " + sP.getAll().toString());
 		Log.i("circle", "fra onResume");
@@ -172,6 +176,9 @@ public class BusLocationFragment extends Fragment implements
 	public void onDestroy() {
 		super.onDestroy();
 		mapView.onDestroy();
+		releaseWakeLock();
+		Log.i("circle", "fra ondestroy");
+
 	}
 
 	private void initMap() {
@@ -209,7 +216,7 @@ public class BusLocationFragment extends Fragment implements
 			JSONObject jsonObj = new JSONObject(
 					HttpUtil.post("url", userLocMap));
 			if (jsonObj.get("flag").equals("true")) {
-				//busLocDes = jsonObj.getString("desc");
+				// busLocDes = jsonObj.getString("desc");
 				busLatLng = new LatLng(
 						Double.valueOf(jsonObj.getString("lat")),
 						Double.valueOf(jsonObj.getDouble("lng")));
@@ -368,5 +375,31 @@ public class BusLocationFragment extends Fragment implements
 			break;
 		}
 
+	}
+
+	/**
+	 * 获取电源锁，保持该服务在屏幕熄灭时仍然获取CPU时，保持运行
+	 */
+	private void acquireWakeLock() {
+		if (null == wakeLock) {
+			PowerManager pm = (PowerManager) getActivity().getSystemService(
+					Context.POWER_SERVICE);
+			wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "my tag");
+			Log.i("wl", "call acquireWakeLock");
+			wakeLock.acquire();
+		} else {
+			Log.i("wl", "call acquireWakeLock");
+			wakeLock.acquire();
+		}
+
+	}
+
+	// 释放设备电源锁
+	private void releaseWakeLock() {
+		if (null != wakeLock && wakeLock.isHeld()) {
+			Log.i("wl", "call releaseWakeLock");
+			wakeLock.release();
+			wakeLock = null;
+		}
 	}
 }
