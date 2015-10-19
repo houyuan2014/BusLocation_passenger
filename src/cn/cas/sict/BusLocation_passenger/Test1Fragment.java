@@ -46,7 +46,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.view.View.OnClickListener;
 
-public class BusLocationFragment extends Fragment implements
+public class Test1Fragment extends Fragment implements
 		AMapLocationListener, OnMarkerClickListener, OnClickListener {
 
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
@@ -115,7 +115,7 @@ public class BusLocationFragment extends Fragment implements
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		// 加载布局文件
-		View rootView = inflater.inflate(R.layout.fragment_bus_location,
+		View rootView = inflater.inflate(R.layout.fragment_location,
 				container, false);
 		mapView = (MapView) rootView.findViewById(R.id.map);
 		mapView.onCreate(savedInstanceState);

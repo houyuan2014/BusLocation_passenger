@@ -31,7 +31,7 @@ public class MainActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		setTitle("定位");
 		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.main_content, new BusLocationFragment()).commit();
+				.replace(R.id.main_content, new LocationFragment()).commit();
 		rg_tab_menu.setOnCheckedChangeListener(this);
 	}
 
@@ -39,7 +39,6 @@ public class MainActivity extends FragmentActivity implements
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		// acquireWakeLock();
 		Log.i("circle", "act onresume");
 
 	}
@@ -56,9 +55,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		// releaseWakeLock();
 		stopService(intent);
-
 		Log.i("circle", "act ondestroy");
 
 	}
@@ -71,7 +68,7 @@ public class MainActivity extends FragmentActivity implements
 			Log.i("aaa", "rg_bus_location");
 			setTitle("定位");
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.main_content, new BusLocationFragment())
+					.replace(R.id.main_content, new LocationFragment())
 					.commit();
 			break;
 		case R.id.rg_book:
@@ -104,18 +101,15 @@ public class MainActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.menu_bus_search:
-			Log.i("aaa", "rg_bus");
-			setTitle("查公交");
+			setTitle("test1");
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.main_content, new BusSearchFragment())
+					.replace(R.id.main_content, new Test1Fragment())
 					.commit();
 			break;
 		case R.id.menu_poi_search:
-			Log.i("aaa", "rg_poi");
-			setTitle("查周边");
-			// getSupportFragmentManager().beginTransaction()
+			setTitle("test2");
 			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.main_content, new PoiSearchFragment())
+					.replace(R.id.main_content, new Test2Fragment())
 					.commit();
 			break;
 		}

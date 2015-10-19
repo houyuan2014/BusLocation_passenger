@@ -12,24 +12,27 @@ import cn.cas.sict.utils.HttpUtil;
 import cn.cas.sict.utils.SPUtil;
 import cn.cas.sict.utils.ToastUtil;
 
+import com.amap.api.location.AMapLocation;
+import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
+import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.model.LatLng;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
 
-public class MyService extends Service {
-
+public class MyService extends Service implements AMapLocationListener {
+	LocationManagerProxy lMP;
 	Vibrator vibrator;
 	boolean hasVibrate;
 	SharedPreferences sP;
@@ -42,8 +45,6 @@ public class MyService extends Service {
 	Timer timer;; // 定义定时器、定时器任务及Handler句柄
 	MyTimerTask timerTask;
 	MyHandler handler;
-	BroadcastReceiver receiver; //接收ui线程发来的消息
-	Intent in = new Intent("aaa");//向ui线程发送消息
 
 	class MyTimerTask extends TimerTask {
 
@@ -65,16 +66,18 @@ public class MyService extends Service {
 					if (jsonObj.get("flag").equals("true")) {
 						busLat = Double.parseDouble(jsonObj.getString("lat"));
 						busLng = Double.parseDouble(jsonObj.getString("lng"));
+						busLL = new LatLng(busLat, busLng);
+						Intent in = new Intent("aaa");// 向ui线程发送消息
 						in.putExtra("buslat", busLat);
 						in.putExtra("buslng", busLng);
-						System.out.println(in.toString());
 						sendBroadcast(in);
-						if (!hasVibrate && userLL != null && busLL != null) {
+						if (userLL != null && busLL != null) {
 							distance = AMapUtils.calculateLineDistance(userLL,
 									busLL);
-							in.putExtra("currentdistance", distance);
-							sendBroadcast(in);
-							if (distance <= remindDistance) {
+							Intent in1 = new Intent("aaa");
+							in1.putExtra("currentdistance", distance);
+							sendBroadcast(in1);
+							if (!hasVibrate && distance < remindDistance) {
 								hasVibrate = true;
 								vibrator.vibrate(new long[] { 10, 600, 60, 600,
 										60, 600 }, -1);
@@ -118,20 +121,9 @@ public class MyService extends Service {
 		routeNum = sP.getInt(SPUtil.SP_ROUTENUM, 1);
 		distance = -1;
 
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("bbb");
-		receiver = new BroadcastReceiver() {
-
-			@Override
-			public void onReceive(Context arg0, Intent arg1) {
-				// TODO Auto-generated method stub
-				userLat = arg1.getDoubleExtra("userlat", -1);
-				userLng = arg1.getDoubleExtra("userlng", -1);
-				userLL = new LatLng(userLat, userLng);
-				System.out.println("bbb 设置用户坐标"+arg1.toString()+userLL.toString());
-			}
-		};
-		registerReceiver(receiver, filter);
+		lMP = LocationManagerProxy.getInstance(this);
+		lMP.requestLocationData(LocationProviderProxy.AMapNetwork, 3 * 1000,
+				10, this);
 
 		System.out.println("Service is Created");
 
@@ -142,11 +134,6 @@ public class MyService extends Service {
 		// TODO Auto-generated method stub
 		System.out.println("--service onstart");
 		startMyTimer();
-
-//		Intent in = new Intent("aaa");
-//		in.putExtra("count", 1);
-//		sendBroadcast(in);
-
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -172,7 +159,8 @@ public class MyService extends Service {
 		vibrator.cancel();
 		timerTask.cancel();
 		timer.purge();
-		unregisterReceiver(receiver);
+		lMP.removeUpdates(this);
+		lMP.destroy();
 		System.out.println("Service is Destroyed");
 	}
 
@@ -180,6 +168,48 @@ public class MyService extends Service {
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void onLocationChanged(Location arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProviderDisabled(String arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProviderEnabled(String arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onLocationChanged(AMapLocation arg0) {
+		// TODO Auto-generated method stub
+		if (arg0 != null && arg0.getAMapException().getErrorCode() == 0) {
+			userLat = arg0.getLatitude();
+			userLng = arg0.getLongitude();
+			userLL = new LatLng(userLat, userLng);
+			System.out.println(userLL.toString());
+			Intent in2 = new Intent("aaa");// 向ui线程发送消息
+			in2.putExtra("userlat", userLat);
+			in2.putExtra("userlng", userLng);
+			sendBroadcast(in2);
+		} else {
+			Log.e("AmapErr", "Location ERR:"
+					+ arg0.getAMapException().getErrorCode());
+		}
 	}
 
 	// /**

@@ -73,7 +73,6 @@ public class HttpUtil {
 					}
 				});
 		new Thread(task).start();
-		Log.i("task.get() ", task.get() + "");
 		return task.get();
 	}
 

@@ -1,5 +1,12 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import cn.cas.sict.utils.HttpUtil;
 import cn.cas.sict.utils.SPUtil;
 
 import com.amap.api.location.AMapLocalWeatherForecast;
@@ -17,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LoginActivity extends Activity implements
 		AMapLocalWeatherListener, OnClickListener {
@@ -66,10 +74,26 @@ public class LoginActivity extends Activity implements
 	 * @param psw1
 	 * @return
 	 */
-	private boolean loginpro(String tel1, String psw1) {
+	private boolean loginpro(String phone, String pass) {
 		// TODO Auto-generated method stub
 
-		// HTTP«Î«Û
+		try
+		{
+			Map<String,String> map = new HashMap<String, String>();
+			map.put("phone", phone);
+			map.put("pass", pass);
+			String url = HttpUtil.BASE_URL+"JSON_Login.ashx";
+			JSONObject jsonObject = new JSONObject(HttpUtil.postRequest(url, map));
+						
+			if (jsonObject.getString("login").equals("success"))
+			{
+				JSONArray route = jsonObject.getJSONArray("route");
+			}
+				return true;
+			}else if(jsonObject.getString("login").equals("fail")){
+				Toast.makeText(this, "√‹¬Î¥ÌŒÛ", Toast.LENGTH_SHORT).show();
+				return false;
+			}
 
 		if (!tel1.equals(sP.getString(SPUtil.SP_USERPHONE, ""))) {
 			editor.putString(SPUtil.SP_USERPHONE, tel1)

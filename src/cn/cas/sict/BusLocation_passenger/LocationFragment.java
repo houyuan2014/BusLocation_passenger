@@ -1,9 +1,5 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationListener;
-import com.amap.api.location.LocationManagerProxy;
-import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
@@ -22,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,23 +26,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class BusSearchFragment extends Fragment implements
-		AMapLocationListener, OnMarkerClickListener, OnClickListener {
+public class LocationFragment extends Fragment implements
+		OnMarkerClickListener, OnClickListener {
 
 	static final CameraPosition SHENYANG = new CameraPosition(new LatLng(
 			41.79676, 123.429096), 11, 0, 0);
 
-	Button btUserLoc, btBusLoc, bt_traffic;
 	AMap map;
 	MapView mapView;
 	Marker busMarker, userMarker;
-	LocationManagerProxy mapLocationManager;
-	BroadcastReceiver receiver;
-	Intent in = new Intent("bbb");
 	SharedPreferences sP;
-	SharedPreferences.Editor editor;
 	LatLng userLatLng, busLatLng;
 	Double userLat, userLng, busLat, busLng;
+	BroadcastReceiver receiver;
+	Button btUserLoc, btBusLoc, bt_traffic;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,19 +47,28 @@ public class BusSearchFragment extends Fragment implements
 		super.onCreate(savedInstanceState);
 		sP = getActivity().getSharedPreferences("userconfig",
 				Context.MODE_PRIVATE);
-		editor = sP.edit();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("aaa");
-		 receiver = new BroadcastReceiver() {
+		receiver = new BroadcastReceiver() {
 
 			@Override
 			public void onReceive(Context arg0, Intent arg1) {
 				// TODO Auto-generated method stub
+				if (arg1.hasExtra("userlat")) {
+					userLat = arg1.getDoubleExtra("userlat", -1);
+					userLng = arg1.getDoubleExtra("userlng", -1);
+					userLatLng = new LatLng(userLat, userLng);
+					userMarker.setPosition(userLatLng);
+					System.out.println("receive用户" + arg1.toString()
+							+ userLatLng.toString());
+
+				}
 				if (arg1.hasExtra("currentdistance")) {
 					getActivity().setTitle(
-							" 相距 " + arg1.getStringExtra("currentdistance")
+							" 相距 " + arg1.getFloatExtra("currentdistance", -1)
 									+ "米");
-					System.out.println("设置标题距离"+in.toString()+arg1.getStringExtra("currentdistance"));
+					System.out.println("receive距离" + arg1.toString()
+							+ arg1.getFloatExtra("currentdistance", -1));
 
 				}
 				if (arg1.hasExtra("buslat")) {
@@ -75,13 +76,14 @@ public class BusSearchFragment extends Fragment implements
 					busLng = arg1.getDoubleExtra("buslng", -1);
 					busLatLng = new LatLng(busLat, busLng);
 					busMarker.setPosition(busLatLng);
-					System.out.println("设置班车坐标"+in.toString()+busLatLng.toString());
+					System.out.println("receive班车" + arg1.toString()
+							+ busLatLng.toString());
 				}
 
 			}
 		};
 		getActivity().registerReceiver(receiver, filter);
-
+		System.out.println("fra oncreated");
 	}
 
 	@Override
@@ -89,90 +91,37 @@ public class BusSearchFragment extends Fragment implements
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		// 加载布局文件
-		View rootView = inflater.inflate(R.layout.fragment_bus_location,
+		View rootView = inflater.inflate(R.layout.fragment_location,
 				container, false);
 		mapView = (MapView) rootView.findViewById(R.id.map);
 		mapView.onCreate(savedInstanceState);
-		initMap();
-		btUserLoc = (Button) rootView.findViewById(R.id.bt_userloc);
-		btBusLoc = (Button) rootView.findViewById(R.id.bt_busloc);
-		bt_traffic = (Button) rootView.findViewById(R.id.bt_traffic);
-		btUserLoc.setOnClickListener(this);
-		btBusLoc.setOnClickListener(this);
-		bt_traffic.setOnClickListener(this);
-		return rootView;
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		mapView.onResume();
-		userMarker.setTitle(sP.getString(SPUtil.SP_USERNAME, "我"));
-		busMarker.setTitle(sP.getString(SPUtil.SP_ROUTENAME, "四号线"));
-		busMarker.setSnippet(sP.getString(SPUtil.SP_ROUTEPHONE, "18855665566"));
-		Log.i("test", "sP  " + sP.getAll().toString());
-		Log.i("circle", "fra onResume");
-
-	}
-
-	/**
-	 * 方法必须重写
-	 */
-	@Override
-	public void onPause() {
-		super.onPause();
-		mapView.onPause();
-		deactivate();
-		Log.i("circle", "fra onPause");
-	}
-
-	@Override
-	public void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-		busMarker.destroy();
-		userMarker.destroy();
-		getActivity().setTitle(R.string.app_name);
-		Log.i("circle", "fra onStop");
-
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		mapView.onDestroy();
-		getActivity().unregisterReceiver(receiver);
-		Log.i("circle", "fra ondestroy");
-
-	}
-
-	private void initMap() {
-		// TODO Auto-generated method stub
 		if (map == null) {
 			map = mapView.getMap();
 			map.moveCamera(CameraUpdateFactory.newCameraPosition(SHENYANG));
 			busMarker = map.addMarker(new MarkerOptions());
 			userMarker = map.addMarker(new MarkerOptions());
 		}
-		if (mapLocationManager == null) {
-			mapLocationManager = LocationManagerProxy
-					.getInstance(getActivity());
-			mapLocationManager.requestLocationData(
-					LocationProviderProxy.AMapNetwork, 10 * 1000, 10, this);
-		}
+		btUserLoc = (Button) rootView.findViewById(R.id.bt_userloc);
+		btBusLoc = (Button) rootView.findViewById(R.id.bt_busloc);
+		bt_traffic = (Button) rootView.findViewById(R.id.bt_traffic);
+		btUserLoc.setOnClickListener(this);
+		btBusLoc.setOnClickListener(this);
+		bt_traffic.setOnClickListener(this);
+		System.out.println("fra onCreateView");
+		return rootView;
 
 	}
 
-	/**
-	 * 关闭定位
-	 */
-	public void deactivate() {
-		if (mapLocationManager != null) {
-			mapLocationManager.removeUpdates(this);
-			mapLocationManager.destroy();
-		}
-		mapLocationManager = null;
+	@Override
+	public void onResume() {
+		super.onResume();
+		mapView.onResume();
+		userMarker.setTitle(sP.getString(SPUtil.SP_USERNAME, "我"));
+		busMarker.setTitle(sP.getString(SPUtil.SP_ROUTENAME, "四号线"));
+		busMarker.setSnippet(sP.getString(SPUtil.SP_ROUTEPHONE, "18855665566"));
+		Log.i("test", "sP  " + sP.getAll().toString());
+		System.out.println("fra onResume");
+
 	}
 
 	@Override
@@ -183,59 +132,7 @@ public class BusSearchFragment extends Fragment implements
 		} else {
 			marker.showInfoWindow();
 		}
-
 		return true;
-	}
-
-	/**
-	 * 定位成功后回调函数
-	 */
-	@Override
-	public void onLocationChanged(AMapLocation amapLocation) {
-		if (amapLocation != null
-				&& amapLocation.getAMapException().getErrorCode() == 0) {
-			userLat = amapLocation.getLatitude();
-			userLng = amapLocation.getLongitude();
-			userLatLng = new LatLng(userLat, userLng);
-			userMarker.setPosition(userLatLng);
-			userMarker.setSnippet(amapLocation.getRoad());
-			in.putExtra("userlat", userLat);
-			in.putExtra("userlng", userLng);
-		} else {
-			Log.e("AmapErr", "Location ERR:"
-					+ amapLocation.getAMapException().getErrorCode());
-		}
-
-	}
-
-	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		mapView.onSaveInstanceState(outState);
-	}
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -274,4 +171,28 @@ public class BusSearchFragment extends Fragment implements
 
 	}
 
+	@Override
+	public void onPause() {
+		super.onPause();
+		mapView.onPause();
+		System.out.println("fra onPause");
+	}
+
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		busMarker.destroy();
+		userMarker.destroy();
+		System.out.println("fra onStop");
+
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mapView.onDestroy();
+		getActivity().unregisterReceiver(receiver);
+		System.out.println("fra onDestroy");
+	}
 }
