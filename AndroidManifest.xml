@@ -5,9 +5,10 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -31,8 +32,9 @@
             android:value="cea83ecf05f65f5c16f19600245ac984" />
 
         <activity
-            android:name="cn.cas.sict.BusLocation_passenger.LoginActivity"
-            android:label="登录" >
+            android:name="cn.cas.sict.BusLocation_passenger.FirstActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,25 +42,51 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="cn.cas.sict.BusLocation_passenger.LoginActivity"
+            android:label="登录" >
+        </activity>
+        <activity
             android:name="cn.cas.sict.BusLocation_passenger.ZhuceActivity"
             android:label="注册" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.MainActivity"
-            android:label="" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.NameActivity"
-            android:label="姓名" >
+            android:label="修改姓名" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.RemindActivity"
-            android:label="提醒" >
+            android:label="距离提醒" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.AdviceActivity"
-            android:label="建议" >
+            android:label="反馈" >
         </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.ShareActivity"
+            android:label="分享"
+            android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.ContactsActivity"
+            android:label="@string/title_activity_contacts" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.ListActivity"
+            android:label="@string/title_activity_list" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.SendMessageActivity"
+            android:label="短信" >
+        </activity>
+        <activity
+            android:name="cn.cas.sict.BusLocation_passenger.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <service android:name=".MyService" >
         </service>

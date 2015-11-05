@@ -81,7 +81,7 @@ public class FirstActivity extends Activity {
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 					Intent in = new Intent();
 					in.setClass(FirstActivity.this, LoginActivity.class);
 					in.putExtra("user", user);
