@@ -128,6 +128,9 @@ public class MyService extends Service implements AMapLocationListener {
 	class MyHandler extends Handler {
 		public void handleMessage(Message msg) {
 			if (msg.what == 3) { // 执行定时任务
+				
+				System.out.println(user.toString());
+				
 				mapRoute = new HashMap<String, Object>();
 				mapRoute.put("route", user.getRouteNum() + "");
 				try {

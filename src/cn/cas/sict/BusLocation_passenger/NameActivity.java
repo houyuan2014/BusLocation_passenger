@@ -37,9 +37,10 @@ public class NameActivity extends Activity {
 
 		name = et_Name.getText().toString().trim();
 		if (name.equals(user.getName())) {
-			return super.onOptionsItemSelected(item);
+			finish();
 		} else {
 			user.setName(name);
+			finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}

@@ -89,8 +89,7 @@ public class FirstActivity extends Activity {
 					finish();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				}
-				;
+				};
 			}
 		});
 		t.start();

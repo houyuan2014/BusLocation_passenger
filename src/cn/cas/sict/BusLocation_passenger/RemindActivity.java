@@ -17,10 +17,10 @@ public class RemindActivity extends Activity implements
 		OnCheckedChangeListener, OnRatingBarChangeListener {
 	private boolean isRemind;
 	private float remindDistance;
-	RatingBar distance;
-	Switch select;
-	TextView tv_remindDistance;
-	User user;
+	private RatingBar ra_distance;
+	private Switch select;
+	private TextView tv_remindDistance;
+	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +28,20 @@ public class RemindActivity extends Activity implements
 		setContentView(R.layout.activity_remind);
 		user = (User) getIntent().getSerializableExtra("user");
 		select = (Switch) findViewById(R.id.select);
-		distance = (RatingBar) findViewById(R.id.distance);
+		select.setChecked(user.getIsRemind());
+		select.setOnCheckedChangeListener(this);
+		ra_distance = (RatingBar) findViewById(R.id.distance);
+		ra_distance.setEnabled(user.getIsRemind());
+		ra_distance.setOnRatingBarChangeListener(this);
 		tv_remindDistance = (TextView) findViewById(R.id.tv_reminddistance);
 		tv_remindDistance.setText(user.getRemindDistance() + "รื");
-		select.setOnCheckedChangeListener(this);
-		distance.setOnRatingBarChangeListener(this);
 
 	}
 
 	@Override
 	public void onRatingChanged(RatingBar ratingBar, float rating,
 			boolean fromUser) {
-		remindDistance = distance.getRating() * 1000;
+		remindDistance = ra_distance.getRating() * 1000;
 		tv_remindDistance.setText(remindDistance + "รื");
 	}
 
@@ -47,10 +49,10 @@ public class RemindActivity extends Activity implements
 	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 		if (isChecked) {
 			isRemind = true;
-			distance.setEnabled(true);
+			ra_distance.setEnabled(true);
 		} else {
 			isRemind = false;
-			distance.setEnabled(false);
+			ra_distance.setEnabled(false);
 		}
 	}
 
