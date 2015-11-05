@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">班车定位</string>
-
+    <string name="app_name">班车</string>
+    <string name="title_activity_share">ShareActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_contacts">ContactsActivity</string>
+    <string name="hint_search_contacts">      搜索联系人</string>
+    <string name="dialog_title_tip">Hello world!</string>
+    <string name="alert_contacts_error_phone">Hello world!</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_send_message">SendMessageActivity</string>
+    <string name="title_activity_wxentry">WXEntryActivity</string>
+    <string name="title_activity_first">FirstActivity</string>
 
 </resources>

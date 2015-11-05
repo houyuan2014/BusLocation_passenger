@@ -1,23 +1,15 @@
 package cn.cas.sict.utils;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
@@ -28,26 +20,19 @@ import android.util.Log;
 public class HttpUtil {
 	// 创建HttpClient对象
 	public static HttpClient httpClient = new DefaultHttpClient();
-	public static final String BASE_URL = "http://Todolist.f3322.net/JSON_Service/";
+	public static String BASE_URL = "http://Todolist.f3322.net/JSON_Service/";
 	static String result;
 	static Double lat = 41.74411;
-	static Double lng = 123.506;
+	static Double lng = 123.5060;
 
-	/**
-	 * @param url
-	 *            发送请求的URL
-	 * @param params
-	 *            请求参数
-	 * @return 服务器响应字符串
-	 * @throws Exception
-	 */
-	public static String postRequest(final String url,
+	public static String sendPost(String urlAppend,
 			final Map<String, String> map) throws Exception {
+		final String url = BASE_URL + urlAppend;
+
 		FutureTask<String> task = new FutureTask<String>(
 				new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						// 创建HttpPost对象。
 						HttpPost post = new HttpPost(url);
 						post.setHeader("Content-Type",
 								"application/x-www-form-urlencoded; charset=utf-8");
@@ -59,9 +44,7 @@ public class HttpUtil {
 
 						Log.i("sendjsonstring", json.toString());
 
-						// 发送POST请求
-						HttpResponse httpResponse;
-						httpResponse = httpClient.execute(post);
+						HttpResponse httpResponse = httpClient.execute(post);
 						if (httpResponse.getStatusLine().getStatusCode() == 200) {
 							// 获取服务器响应字符串
 							result = EntityUtils.toString(httpResponse
@@ -69,15 +52,15 @@ public class HttpUtil {
 							return result;
 						}
 						return null;
-
 					}
 				});
 		new Thread(task).start();
 		return task.get();
 	}
 
-	public static String post(final String url,
+	public static String getBusLoc(String urlAppend,
 			final Map<String, Object> userLocMap) throws Exception {
+		String url = BASE_URL = urlAppend;
 		HttpPost post = new HttpPost(url);
 		post.setHeader("Content-Type",
 				"application/x-www-form-urlencoded; charset=utf-8");

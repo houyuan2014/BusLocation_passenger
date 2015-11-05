@@ -1,13 +1,6 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import cn.cas.sict.utils.HttpUtil;
-import cn.cas.sict.utils.SPUtil;
+import cn.cas.sict.utils.SaleUtil;
 
 import com.amap.api.location.AMapLocalWeatherForecast;
 import com.amap.api.location.AMapLocalWeatherListener;
@@ -28,12 +21,10 @@ import android.widget.Toast;
 
 public class LoginActivity extends Activity implements
 		AMapLocalWeatherListener, OnClickListener {
-	EditText tel, psw;
-	TextView weather;
-	String tel1, psw1;
-	SharedPreferences sP;
-	SharedPreferences.Editor editor;
-	LocationManagerProxy locManagerProxy;
+	private EditText et_phone, et_pass;
+	private TextView tv_weather;
+	private LocationManagerProxy locManagerProxy;
+	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +33,22 @@ public class LoginActivity extends Activity implements
 		locManagerProxy = LocationManagerProxy.getInstance(this);
 		locManagerProxy.requestWeatherUpdates(
 				LocationManagerProxy.WEATHER_TYPE_LIVE, this);
-		sP = getSharedPreferences("userconfig", MODE_PRIVATE);
-		editor = sP.edit();
-		editor.putBoolean("hasvibrate", false).commit(); // 必须要commit()才能生效
-		tel = (EditText) findViewById(R.id.tel);
-		psw = (EditText) findViewById(R.id.psw);
-		tel.setText(sP.getString("phone", ""));
-		psw.setText(sP.getString("passwd", ""));
-		weather = (TextView) findViewById(R.id.tv_weather);
+		user = (User) getIntent().getSerializableExtra("user");
+		System.out.println("__>" + user.toString());
+		et_phone = (EditText) findViewById(R.id.tel);
+		et_pass = (EditText) findViewById(R.id.psw);
+		tv_weather = (TextView) findViewById(R.id.tv_weather);
 		Button denglu = (Button) findViewById(R.id.bt_login);
 		Button zhuce = (Button) findViewById(R.id.bt_logup);
-		Log.i("sP", sP.getAll() + "");
 		zhuce.setOnClickListener(this);
 		denglu.setOnClickListener(this);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		et_phone.setText(user.getPhone());
+		et_pass.setText(user.getPasswd());
 	}
 
 	/**
@@ -63,46 +57,47 @@ public class LoginActivity extends Activity implements
 	 * @return
 	 */
 	private boolean validate(String tel, String passwd) {
-		// TODO Auto-generated method stub
-		return true;
+		if (SaleUtil.isValidPhoneNumber(tel)) {
+			if (!passwd.equals("")) {
+				return true;
+			} else {
+				Toast.makeText(this, "请输入密码", Toast.LENGTH_LONG).show();
+			}
+		} else {
+			Toast.makeText(this, "手机号不合法", Toast.LENGTH_LONG).show();
+		}
+		return false;
 	}
 
-	/**
-	 * 请求登录
-	 * 
-	 * @param tel1
-	 * @param psw1
-	 * @return
-	 */
 	private boolean loginpro(String phone, String pass) {
 		// TODO Auto-generated method stub
 
-		try
-		{
-			Map<String,String> map = new HashMap<String, String>();
-			map.put("phone", phone);
-			map.put("pass", pass);
-			String url = HttpUtil.BASE_URL+"JSON_Login.ashx";
-			JSONObject jsonObject = new JSONObject(HttpUtil.postRequest(url, map));
-						
-			if (jsonObject.getString("login").equals("success"))
-			{
-				JSONArray route = jsonObject.getJSONArray("route");
-			}
-				return true;
-			}else if(jsonObject.getString("login").equals("fail")){
-				Toast.makeText(this, "密码错误", Toast.LENGTH_SHORT).show();
-				return false;
-			}
-
-		if (!tel1.equals(sP.getString(SPUtil.SP_USERPHONE, ""))) {
-			editor.putString(SPUtil.SP_USERPHONE, tel1)
-					.putString(SPUtil.SP_USERPASSWD, psw1)
-					.putString(SPUtil.SP_USERNAME, "")
-					.putInt(SPUtil.SP_ROUTENUM, 0)
-					.putString(SPUtil.SP_ROUTENAME, "").commit();
+		// Map<String, String> map = new HashMap<String, String>();
+		// map.put("phone", phone);
+		// map.put("pass", pass);
+		// String url = HttpUtil.BASE_URL + "JSON_Login.ashx";
+		// JSONObject jsonObject;
+		// try {
+		// jsonObject = new JSONObject(HttpUtil.postRequest(url, map));
+		// if (jsonObject.getString("login").equals("success")) {
+		if (!phone.equals(user.getPhone())) {
+			user.setPhone(phone);
+			user.setPasswd(pass);
 		}
 		return true;
+		// } else if (jsonObject.getString("login").equals("fail")) {
+		// Toast.makeText(this, "密码错误", Toast.LENGTH_SHORT).show();
+		// return false;
+		// }
+		// } catch (JSONException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// return false;
 	}
 
 	@Override
@@ -116,7 +111,7 @@ public class LoginActivity extends Activity implements
 		// TODO Auto-generated method stub
 		if (localWeatherLive != null
 				&& localWeatherLive.getAMapException().getErrorCode() == 0) {
-			weather.setText(localWeatherLive.getCity() + "  "
+			tv_weather.setText(localWeatherLive.getCity() + "  "
 					+ localWeatherLive.getWeather() + "  "
 					+ localWeatherLive.getTemperature() + "℃  "
 					+ localWeatherLive.getWindDir() + "风  "
@@ -125,9 +120,8 @@ public class LoginActivity extends Activity implements
 	}
 
 	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
+	protected void onDestroy() {
+		super.onDestroy();
 		locManagerProxy.destroy();
 	}
 
@@ -137,15 +131,17 @@ public class LoginActivity extends Activity implements
 		switch (v.getId()) {
 		case R.id.bt_logup:
 			Intent intent = new Intent(LoginActivity.this, ZhuceActivity.class);
+			intent.putExtra("user", user);
 			startActivity(intent);
 			break;
 		case R.id.bt_login:
-			String tel1 = tel.getText().toString();
-			String psw1 = psw.getText().toString();
-			if (validate(tel1, psw1)) {
-				if (loginpro(tel1, psw1)) {
+			String phone = et_phone.getText().toString();
+			String pass = et_pass.getText().toString();
+			if (validate(phone, pass)) {
+				if (loginpro(phone, pass)) {
 					Intent intent1 = new Intent(LoginActivity.this,
 							MainActivity.class);
+					intent1.putExtra("user", user);
 					startActivity(intent1);
 					finish();// 启动新的activity后要关闭登录activity，否则用户按返回键将返回登录activity
 				}

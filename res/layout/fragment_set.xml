@@ -11,4 +11,25 @@
         android:dividerHeight="2dp" >
     </ListView>
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="40dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ccc"
+        android:gravity="bottom|center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/share"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffff"
+            android:text="-----------分       享-----------"
+            android:textColor="#0ff"
+            android:textSize="12sp" />
+    </LinearLayout>
+
 </LinearLayout>

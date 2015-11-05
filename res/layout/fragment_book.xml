@@ -2,17 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="12dp"
+    android:layout_margin="7dp"
     android:orientation="vertical" >
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#eee"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="位置："
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_busloc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="相距："
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <TextView
@@ -21,7 +58,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="路线:"
-            android:textColor="#00f"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -33,14 +69,9 @@
             android:entries="@array/route" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#eee"
         android:orientation="horizontal" >
 
         <TextView
@@ -49,7 +80,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:text="余座:"
-            android:textColor="#00f"
             android:textSize="20sp" />
 
         <TextView
@@ -60,10 +90,6 @@
             android:text="15 / 50"
             android:textSize="20sp" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -111,29 +137,26 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
-
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#eee"
         android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/dill"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="预订" />
 
         <Button
             android:id="@+id/cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/shape_gray_button"
             android:text="取消预订" />
+
+        <Button
+            android:id="@+id/dill"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="@drawable/shape_blue_button"
+            android:text="预订" />
     </LinearLayout>
 
 </LinearLayout>

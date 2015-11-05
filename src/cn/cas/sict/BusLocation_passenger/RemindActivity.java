@@ -1,86 +1,68 @@
 package cn.cas.sict.BusLocation_passenger;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.NumberPicker;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class RemindActivity extends Activity {
-	SharedPreferences sharedpreferences;
-	SharedPreferences.Editor editor;
+public class RemindActivity extends Activity implements
+		OnCheckedChangeListener, OnRatingBarChangeListener {
+	private boolean isRemind;
+	private float remindDistance;
+	RatingBar distance;
+	Switch select;
+	TextView tv_remindDistance;
+	User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_remind);
-		// final NumberPicker meter = (NumberPicker) findViewById(R.id.meter);
-		// final NumberPicker kilo = (NumberPicker) findViewById(R.id.kilo);
-		// kilo.setMinValue(1);
-		// kilo.setMaxValue(4);
-		// kilo.setValue(0);
-		// meter.setMinValue(0);
-		// meter.setMaxValue(9);
-		// meter.setValue(5);
-		// final Button yes = (Button) findViewById(R.id.yes);
-		// yes.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		//
-		// yes.setText((yes.getText().toString() == "是") ? "否" : "是");
-		// if (yes.getText().toString() == "否") {
-		// kilo.setEnabled(true);
-		// meter.setEnabled(true);
-		//
-		// } else {
-		// kilo.setEnabled(false);
-		// meter.setEnabled(false);
-		//
-		// }
-		//
-		// }
-		//
-		// });
-		// // editor.putInt("distance", km+100*m).commit();
-		// meter.setOnValueChangedListener(new
-		// NumberPicker.OnValueChangeListener() {
-		//
-		// @Override
-		// public void onValueChange(NumberPicker picker, int oldVal,
-		// int newVal) {
-		// // TODO Auto-generated method stub
-		// // m=meter.getValue();
-		// // editor.putInt("m_distance", m).commit();
-		// meter.setEnabled(false);
-		// }
-		//
-		// });
-		// kilo.setOnValueChangedListener(new
-		// NumberPicker.OnValueChangeListener() {
-		//
-		// @Override
-		// public void onValueChange(NumberPicker picker, int oldVal,
-		// int newVal) {
-		// // TODO Auto-generated method stub
-		// // km=kilo.getValue();
-		// // editor.putInt("km_distance", km).commit();
-		// kilo.setEnabled(false);
-		// }
-		// });
-		//
+		user = (User) getIntent().getSerializableExtra("user");
+		select = (Switch) findViewById(R.id.select);
+		distance = (RatingBar) findViewById(R.id.distance);
+		tv_remindDistance = (TextView) findViewById(R.id.tv_reminddistance);
+		tv_remindDistance.setText(user.getRemindDistance() + "米");
+		select.setOnCheckedChangeListener(this);
+		distance.setOnRatingBarChangeListener(this);
+
 	}
 
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// // Inflate the menu; this adds items to the action bar if it is present.
-	// getMenuInflater().inflate(R.menu.remind, menu);
-	// return true;
-	// }
+	@Override
+	public void onRatingChanged(RatingBar ratingBar, float rating,
+			boolean fromUser) {
+		remindDistance = distance.getRating() * 1000;
+		tv_remindDistance.setText(remindDistance + "米");
+	}
+
+	@Override
+	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
+		if (isChecked) {
+			isRemind = true;
+			distance.setEnabled(true);
+		} else {
+			isRemind = false;
+			distance.setEnabled(false);
+		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (isRemind != user.getIsRemind()) {
+			user.setRemind(isRemind);
+		}
+		if (remindDistance != user.getRemindDistance()) {
+			user.setRemindDistance(remindDistance);
+		}
+	}
 
 }

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="10sp"
+    android:layout_margin="7dp"
     android:orientation="vertical" >
 
     <ImageView
@@ -44,6 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/shape_gray_button"
             android:text="注册" />
 
         <Button
@@ -51,6 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/shape_blue_button"
             android:text="登录" />
     </LinearLayout>
 
