@@ -14,7 +14,7 @@ public class MainActivity extends FragmentActivity implements
 
 	private RadioGroup rg_tab_menu;
 	private Intent intent;
-	User user;
+	private User user;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	public void saveUserData() {
-		SharedPreferences sP = getSharedPreferences(Values.SP,
+		SharedPreferences sP = getSharedPreferences(Values.SP_NAME,
 				Context.MODE_PRIVATE);
 		Editor editor = sP.edit();
 		editor.putString("phone", user.getPhone())

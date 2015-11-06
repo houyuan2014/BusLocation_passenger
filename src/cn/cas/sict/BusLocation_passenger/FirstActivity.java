@@ -11,9 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.widget.Button;
 
 public class FirstActivity extends Activity {
 	SharedPreferences sP;
@@ -24,22 +22,20 @@ public class FirstActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first);
-
 		readDataToUser();
-		System.out.println(user.toString());
 		goToLogin();
 
 	}
 
 	private void readDataToUser() {
 		user = new User();
-		sP = getSharedPreferences(Values.SP, Context.MODE_PRIVATE);
+		sP = getSharedPreferences(Values.SP_NAME, Context.MODE_PRIVATE);
 		String phone = sP.getString("phone", "");
 		String passwd = sP.getString("passwd", "");
 		String name = sP.getString("name", "");
 		int routeNum = sP.getInt("route", 1);
 		String routePhone = sP.getString("routephone", "");
-		String routeName = sP.getString("routename", "");
+		String routeName = sP.getString("routename", "“ª∫≈œﬂ");
 		boolean isRemind = sP.getBoolean("remind", true);
 		float remindDistance = sP.getFloat("reminddistance", 3000);
 		user.setPhone(phone);

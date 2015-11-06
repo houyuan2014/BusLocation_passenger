@@ -22,7 +22,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,7 +29,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
-import android.widget.Toast;
 
 public class MyService extends Service implements AMapLocationListener {
 	LocationManagerProxy lMP;
@@ -101,7 +99,7 @@ public class MyService extends Service implements AMapLocationListener {
 		 * 所以同一个定时器任务只能被放置一次
 		 */
 		timerTask = new MyTimerTask(); // 新建一个任务（必须）
-		timer.scheduleAtFixedRate(timerTask, 0, 5000);
+		timer.scheduleAtFixedRate(timerTask, 0, 6000);
 
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -140,11 +138,13 @@ public class MyService extends Service implements AMapLocationListener {
 						busLat = Double.parseDouble(jsonObj.getString("lat"));
 						busLng = Double.parseDouble(jsonObj.getString("lng"));
 						busLL = new LatLng(busLat, busLng);
+						String busLoc = jsonObj.getString("desc");
 						// 向ui线程发送消息
 						Intent in0 = new Intent(Values.BROADCASTTOUI);
 						in0.putExtra("flag", Values.BUSFLAG);
 						in0.putExtra("lat", busLat);
 						in0.putExtra("lng", busLng);
+						in0.putExtra("busdesc", busLoc);
 						sendBroadcast(in0);
 
 						if (userLL != null && busLL != null) {

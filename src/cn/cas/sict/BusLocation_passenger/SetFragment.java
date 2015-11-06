@@ -7,14 +7,11 @@ import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +20,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 public class SetFragment extends Fragment {
 	private ListView list;
@@ -66,14 +62,18 @@ public class SetFragment extends Fragment {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				switch (position) {
-				case 0:// 手机号
+				
+				// 手机号
+				case 0:
 					break;
-				case 1:// 姓名
+				// 姓名
+				case 1:
 					Intent in0 = new Intent(getActivity(), NameActivity.class);
 					in0.putExtra("user", user);
 					startActivity(in0);
 					break;
-				case 2:// 路线
+				// 路线
+				case 2:
 					final String[] items = new String[] { "一号线", "二号线", "三号线",
 							"四号线" };
 					Builder builder = new AlertDialog.Builder(getActivity());
@@ -92,17 +92,21 @@ public class SetFragment extends Fragment {
 					});
 					builder.create().show();
 					break;
-				case 3:// 提醒
+				// 提醒
+				case 3:
 					Intent in1 = new Intent(getActivity(), RemindActivity.class);
 					in1.putExtra("user", user);
 					startActivity(in1);
 					break;
-				case 4:// 反馈
+				// 反馈
+				case 4:
 					Intent in2 = new Intent(getActivity(), AdviceActivity.class);
 					startActivity(in2);
 					break;
-				case 5:// 注销，更改用户
+				// 注销
+				case 5:
 					Intent in3 = new Intent(getActivity(), LoginActivity.class);
+					in3.putExtra("user", user);
 					startActivity(in3);
 					getActivity().finish();
 				}
@@ -148,14 +152,12 @@ public class SetFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		System.out.println("set onPause");
 
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		System.out.println("set onDestroy");
 
 	}
 }

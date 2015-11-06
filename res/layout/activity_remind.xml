@@ -18,14 +18,18 @@
             android:textSize="18sp" />
 
         <Switch
-            android:id="@+id/select"
+            android:id="@+id/switcher"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:checked="true"
             android:textOff="否"
             android:textOn="是" />
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="在指定距离内收到震动提醒" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -47,18 +51,11 @@
             android:textSize="16sp" />
     </RelativeLayout>
 
-    <TextView
+    <SeekBar
+        android:id="@+id/seekbar_distance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="在指定距离内收到震动提醒" />
-
-    <RatingBar
-        android:id="@+id/distance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:isIndicator="false"
-        android:numStars="6"
-        android:rating="3"
-        android:stepSize="0.5" />
+        android:max="12"
+        android:progress="6" />
 
 </LinearLayout>

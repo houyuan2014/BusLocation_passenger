@@ -9,9 +9,7 @@ import com.amap.api.location.LocationManagerProxy;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -81,6 +79,7 @@ public class LoginActivity extends Activity implements
 		// jsonObject = new JSONObject(HttpUtil.postRequest(url, map));
 		// if (jsonObject.getString("login").equals("success")) {
 		if (!phone.equals(user.getPhone())) {
+			user.reset();
 			user.setPhone(phone);
 			user.setPasswd(pass);
 		}

@@ -17,12 +17,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -30,7 +27,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +36,6 @@ import android.widget.TextView;
  */
 public class ContactsActivity extends Activity {
 	private Context ctx = ContactsActivity.this;
-	private TextView topTitleTextView;
 	private ListView listView = null;
 	List<HashMap<String, String>> contactsList = null;
 	private EditText contactsSearchView;

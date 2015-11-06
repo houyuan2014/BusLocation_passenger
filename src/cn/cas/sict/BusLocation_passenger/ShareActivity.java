@@ -19,7 +19,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 public class ShareActivity extends Activity {
 	private IWXAPI wxApi;
-    private Button f,c,p,cancel;
+    private Button f,c,p;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,7 +27,6 @@ public class ShareActivity extends Activity {
 		f=(Button)findViewById(R.id.w_share);
 		c=(Button)findViewById(R.id.c_share);
 		p=(Button)findViewById(R.id.p_share);
-		//cancel=(Button)findViewById(R.id.cancel);
 		wxApi = WXAPIFactory.createWXAPI(this, Constants._ID);  
 		wxApi.registerApp(Constants._ID);  
 		
@@ -38,6 +37,7 @@ public class ShareActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				wechatShare(0);
+				finish();
 			}
 			
 		});
@@ -47,6 +47,7 @@ public class ShareActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				wechatShare(1);
+				finish();
 			}
 			
 		});
@@ -61,6 +62,7 @@ public class ShareActivity extends Activity {
 				intent.putExtra(Intent.EXTRA_SUBJECT, "title");
 				intent.putExtra(Intent.EXTRA_TEXT, "班车app下载的官方网址");
 				startActivity(intent);
+				finish();
 				
 //				Intent in=new Intent();
 //				in.setClass(ShareActivity.this, ContactsActivity.class);

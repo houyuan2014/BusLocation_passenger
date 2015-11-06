@@ -3,6 +3,13 @@ package cn.cas.sict.BusLocation_passenger;
 import java.io.Serializable;
 
 public class User implements Serializable {
+
+	/*
+	 * 类型 字段名 字段值 备注 String phone 手机号 String passwd 密码 int route 1 路线号 String
+	 * routename 一号线 路线名称 String routephone 18811112222 路线手机号 String name
+	 * hy_sict 姓名 boolean remind true 是否提醒 floate reminddistance 3000 提醒距离(米)
+	 */
+
 	/**
 	 * 所有的数据成员必须都是实现了序列化接口的
 	 */
@@ -16,8 +23,15 @@ public class User implements Serializable {
 	private static boolean isRemind;
 	private static float remindDistance;
 
-	public User() {
-
+	public void reset() {
+		phone = "";
+		passwd = "";
+		name = "";
+		routeNum = 1;
+		routePhone = "";
+		routeName = "一号线";
+		isRemind = true;
+		remindDistance = 3000;
 	}
 
 	public String toString() {

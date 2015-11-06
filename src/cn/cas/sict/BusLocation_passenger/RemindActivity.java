@@ -1,24 +1,20 @@
 package cn.cas.sict.BusLocation_passenger;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.RatingBar;
-import android.widget.RatingBar.OnRatingBarChangeListener;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RemindActivity extends Activity implements
-		OnCheckedChangeListener, OnRatingBarChangeListener {
+		OnCheckedChangeListener, OnSeekBarChangeListener {
 	private boolean isRemind;
-	private float remindDistance;
-	private RatingBar ra_distance;
-	private Switch select;
+	private int remindDistance;
+	private SeekBar seekbar;
+	private Switch switcher;
 	private TextView tv_remindDistance;
 	private User user;
 
@@ -26,45 +22,50 @@ public class RemindActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_remind);
+		//！务必先初始化再操作
 		user = (User) getIntent().getSerializableExtra("user");
-		select = (Switch) findViewById(R.id.select);
-		select.setChecked(user.getIsRemind());
-		select.setOnCheckedChangeListener(this);
-		ra_distance = (RatingBar) findViewById(R.id.distance);
-		ra_distance.setEnabled(user.getIsRemind());
-		ra_distance.setOnRatingBarChangeListener(this);
+		switcher = (Switch) findViewById(R.id.switcher);
+		seekbar = (SeekBar) findViewById(R.id.seekbar_distance);
 		tv_remindDistance = (TextView) findViewById(R.id.tv_reminddistance);
+		//！务必先初始化再操作
 		tv_remindDistance.setText(user.getRemindDistance() + "米");
-
-	}
-
-	@Override
-	public void onRatingChanged(RatingBar ratingBar, float rating,
-			boolean fromUser) {
-		remindDistance = ra_distance.getRating() * 1000;
-		tv_remindDistance.setText(remindDistance + "米");
+		switcher.setChecked(user.getIsRemind());
+		seekbar.setEnabled(user.getIsRemind());
+		switcher.setOnCheckedChangeListener(this);
+		seekbar.setOnSeekBarChangeListener(this);
 	}
 
 	@Override
 	public void onCheckedChanged(CompoundButton arg0, boolean isChecked) {
 		if (isChecked) {
 			isRemind = true;
-			ra_distance.setEnabled(true);
+			seekbar.setEnabled(true);
 		} else {
 			isRemind = false;
-			ra_distance.setEnabled(false);
+			remindDistance = seekbar.getProgress() * 500;
+			seekbar.setEnabled(false);
 		}
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (isRemind != user.getIsRemind()) {
-			user.setRemind(isRemind);
-		}
-		if (remindDistance != user.getRemindDistance()) {
-			user.setRemindDistance(remindDistance);
-		}
+		user.setRemind(isRemind);
+		user.setRemindDistance(remindDistance);
+	}
+
+	@Override
+	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
+		remindDistance = progress * 500;
+		tv_remindDistance.setText(remindDistance + "米");
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar arg0) {
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar arg0) {
 	}
 
 }
