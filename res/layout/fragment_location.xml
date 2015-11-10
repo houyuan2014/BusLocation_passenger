@@ -16,13 +16,16 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:divider="@drawable/separator_vertical"
             android:orientation="vertical"
-            android:paddingTop="20dp" >
+            android:paddingTop="20dp"
+            android:showDividers="middle" >
 
             <Button
                 android:id="@+id/bt_userloc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/shape_gray_button"
                 android:text="我的位置" />
 
             <Button
@@ -30,12 +33,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/bt_userloc"
+                android:background="@drawable/shape_gray_button"
                 android:text="班车位置" />
 
             <Button
                 android:id="@+id/bt_traffic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/shape_gray_button"
                 android:text="显示路况" />
         </LinearLayout>
     </FrameLayout>

@@ -2,6 +2,9 @@ package cn.cas.sict.BusLocation_passenger;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
@@ -22,12 +25,12 @@ public class RemindActivity extends Activity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_remind);
-		//！务必先初始化再操作
+		// ！务必先初始化再操作
 		user = (User) getIntent().getSerializableExtra("user");
 		switcher = (Switch) findViewById(R.id.switcher);
 		seekbar = (SeekBar) findViewById(R.id.seekbar_distance);
 		tv_remindDistance = (TextView) findViewById(R.id.tv_reminddistance);
-		//！务必先初始化再操作
+		// ！务必先初始化再操作
 		tv_remindDistance.setText(user.getRemindDistance() + "米");
 		switcher.setChecked(user.getIsRemind());
 		seekbar.setEnabled(user.getIsRemind());
@@ -48,10 +51,18 @@ public class RemindActivity extends Activity implements
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = new MenuInflater(this);
+		menuInflater.inflate(R.menu.remind, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		user.setRemind(isRemind);
 		user.setRemindDistance(remindDistance);
+		finish();
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
