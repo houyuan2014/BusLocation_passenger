@@ -1,5 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import cn.cas.sict.utils.User;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,23 +21,28 @@ public class RemindActivity extends Activity implements
 	private SeekBar seekbar;
 	private Switch switcher;
 	private TextView tv_remindDistance;
+	private ActionBar ab;
 	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_remind);
-		// £¡Îñ±ØÏÈ³õÊ¼»¯ÔÙ²Ù×÷
-		user = (User) getIntent().getSerializableExtra("user");
+		ab = getActionBar();
+		ab.setDisplayHomeAsUpEnabled(true);
+		// ï¼åŠ¡å¿…å…ˆåˆå§‹åŒ–å†æ“ä½œ
+		user = User.getUser();
+		remindDistance = (int) user.getRemindDistance();
+		isRemind = user.getIsRemind();
 		switcher = (Switch) findViewById(R.id.switcher);
 		seekbar = (SeekBar) findViewById(R.id.seekbar_distance);
 		tv_remindDistance = (TextView) findViewById(R.id.tv_reminddistance);
-		// £¡Îñ±ØÏÈ³õÊ¼»¯ÔÙ²Ù×÷
-		tv_remindDistance.setText(user.getRemindDistance() + "Ã×");
-		switcher.setChecked(user.getIsRemind());
-		seekbar.setEnabled(user.getIsRemind());
+		// ï¼åŠ¡å¿…å…ˆåˆå§‹åŒ–å†æ“ä½œ
 		switcher.setOnCheckedChangeListener(this);
 		seekbar.setOnSeekBarChangeListener(this);
+		seekbar.setProgress(remindDistance / 500);
+		switcher.setChecked(isRemind);
+		tv_remindDistance.setText(remindDistance + "ç±³");
 	}
 
 	@Override
@@ -45,7 +52,6 @@ public class RemindActivity extends Activity implements
 			seekbar.setEnabled(true);
 		} else {
 			isRemind = false;
-			remindDistance = seekbar.getProgress() * 500;
 			seekbar.setEnabled(false);
 		}
 	}
@@ -59,16 +65,23 @@ public class RemindActivity extends Activity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		user.setRemind(isRemind);
-		user.setRemindDistance(remindDistance);
-		finish();
+		switch (item.getItemId()) {
+		case R.id.menu_save_remind:
+			user.setRemind(isRemind);
+			user.setRemindDistance(remindDistance);
+			finish();
+			break;
+		case android.R.id.home:
+			finish();
+			break;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
 		remindDistance = progress * 500;
-		tv_remindDistance.setText(remindDistance + "Ã×");
+		tv_remindDistance.setText(remindDistance + "ç±³");
 	}
 
 	@Override

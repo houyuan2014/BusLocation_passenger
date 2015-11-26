@@ -1,6 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
 import cn.cas.sict.utils.SaleUtil;
+import cn.cas.sict.utils.User;
 
 import com.amap.api.location.AMapLocalWeatherForecast;
 import com.amap.api.location.AMapLocalWeatherListener;
@@ -31,7 +32,8 @@ public class LoginActivity extends Activity implements
 		locManagerProxy = LocationManagerProxy.getInstance(this);
 		locManagerProxy.requestWeatherUpdates(
 				LocationManagerProxy.WEATHER_TYPE_LIVE, this);
-		user = (User) getIntent().getSerializableExtra("user");
+		user = User.getUser();
+		// user = (User) getIntent().getSerializableExtra("user");
 		System.out.println("__>" + user.toString());
 		et_phone = (EditText) findViewById(R.id.tel);
 		et_pass = (EditText) findViewById(R.id.psw);
@@ -50,7 +52,7 @@ public class LoginActivity extends Activity implements
 	}
 
 	/**
-	 * ÑéÖ¤ÊäÈëµÄÊÖ»úºÅ/ÃÜÂëÊÇ·ñÓĞĞ§
+	 * éªŒè¯è¾“å…¥çš„æ‰‹æœºå·/å¯†ç æ˜¯å¦æœ‰æ•ˆ
 	 * 
 	 * @return
 	 */
@@ -59,10 +61,10 @@ public class LoginActivity extends Activity implements
 			if (!passwd.equals("")) {
 				return true;
 			} else {
-				Toast.makeText(this, "ÇëÊäÈëÃÜÂë", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "è¯·è¾“å…¥å¯†ç ", Toast.LENGTH_LONG).show();
 			}
 		} else {
-			Toast.makeText(this, "ÊÖ»úºÅ²»ºÏ·¨", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "æ‰‹æœºå·ä¸åˆæ³•", Toast.LENGTH_LONG).show();
 		}
 		return false;
 	}
@@ -85,7 +87,7 @@ public class LoginActivity extends Activity implements
 		}
 		return true;
 		// } else if (jsonObject.getString("login").equals("fail")) {
-		// Toast.makeText(this, "ÃÜÂë´íÎó", Toast.LENGTH_SHORT).show();
+		// Toast.makeText(this, "å¯†ç é”™è¯¯", Toast.LENGTH_SHORT).show();
 		// return false;
 		// }
 		// } catch (JSONException e) {
@@ -112,9 +114,9 @@ public class LoginActivity extends Activity implements
 				&& localWeatherLive.getAMapException().getErrorCode() == 0) {
 			tv_weather.setText(localWeatherLive.getCity() + "  "
 					+ localWeatherLive.getWeather() + "  "
-					+ localWeatherLive.getTemperature() + "¡æ  "
-					+ localWeatherLive.getWindDir() + "·ç  "
-					+ localWeatherLive.getWindPower() + "¼¶");
+					+ localWeatherLive.getTemperature() + "â„ƒ  "
+					+ localWeatherLive.getWindDir() + "é£  "
+					+ localWeatherLive.getWindPower() + "çº§");
 		}
 	}
 
@@ -130,7 +132,7 @@ public class LoginActivity extends Activity implements
 		switch (v.getId()) {
 		case R.id.bt_logup:
 			Intent intent = new Intent(LoginActivity.this, ZhuceActivity.class);
-			intent.putExtra("user", user);
+			// intent.putExtra("user", user);
 			startActivity(intent);
 			break;
 		case R.id.bt_login:
@@ -140,9 +142,9 @@ public class LoginActivity extends Activity implements
 				if (loginpro(phone, pass)) {
 					Intent intent1 = new Intent(LoginActivity.this,
 							MainActivity.class);
-					intent1.putExtra("user", user);
+					// intent1.putExtra("user", user);
 					startActivity(intent1);
-					finish();// Æô¶¯ĞÂµÄactivityºóÒª¹Ø±ÕµÇÂ¼activity£¬·ñÔòÓÃ»§°´·µ»Ø¼ü½«·µ»ØµÇÂ¼activity
+					finish();// å¯åŠ¨æ–°çš„activityåè¦å…³é—­ç™»å½•activityï¼Œå¦åˆ™ç”¨æˆ·æŒ‰è¿”å›é”®å°†è¿”å›ç™»å½•activity
 				}
 			}
 			break;

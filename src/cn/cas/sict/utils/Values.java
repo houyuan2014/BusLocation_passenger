@@ -1,4 +1,4 @@
-package cn.cas.sict.BusLocation_passenger;
+package cn.cas.sict.utils;
 
 public class Values {
 

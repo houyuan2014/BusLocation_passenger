@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dong"
+    android:background="@drawable/im_dong"
      android:id="@+id/view_dong"
     
     >

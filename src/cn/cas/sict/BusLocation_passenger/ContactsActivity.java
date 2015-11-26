@@ -30,9 +30,10 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
- * ÏÔÊ¾ÓÃ»§ÊÖ»úÉÏµÄÁªÏµÈË
+ * æ˜¾ç¤ºç”¨æˆ·æ‰‹æœºä¸Šçš„è”ç³»äºº
  */
 public class ContactsActivity extends Activity {
 	private Context ctx = ContactsActivity.this;
@@ -40,9 +41,9 @@ public class ContactsActivity extends Activity {
 	List<HashMap<String, String>> contactsList = null;
 	private EditText contactsSearchView;
 	private ProgressDialog progressDialog = null;
-	// Êı¾İ¼ÓÔØÍê³ÉµÄÏûÏ¢
+	// æ•°æ®åŠ è½½å®Œæˆçš„æ¶ˆæ¯
 	private final int MESSAGE_SUCC_LOAD = 0;
-	// Êı¾İ²éÑ¯Íê³ÉµÄÏûÏ¢
+	// æ•°æ®æŸ¥è¯¢å®Œæˆçš„æ¶ˆæ¯
 	private final int MESSAGE_SUCC_QUERY = 1;
 	private Handler handler = new Handler() {
 		@Override
@@ -66,10 +67,10 @@ public class ContactsActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_contacts);
-		// Ê¹ÓÃlistViewÏÔÊ¾ÁªÏµÈË
+		// ä½¿ç”¨listViewæ˜¾ç¤ºè”ç³»äºº
 		listView = (ListView) findViewById(R.id.contact_list);
 		loadAndSaveContacts();
-		// °ó¶¨listView itemµÄµ¥»÷ÊÂ¼ş
+		// ç»‘å®šlistView itemçš„å•å‡»äº‹ä»¶
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@SuppressWarnings("unchecked")
 			public void onItemClick(AdapterView<?> adapterView, View view,
@@ -77,31 +78,28 @@ public class ContactsActivity extends Activity {
 				HashMap<String, String> map = (HashMap<String, String>) adapterView
 						.getItemAtPosition(position);
 				String phone = map.get("phone");
-				// ¶ÔÊÖ»úºÅÂë½øĞĞÔ¤´¦Àí£¨È¥µôºÅÂëÇ°µÄ+86¡¢Ê×Î²¿Õ¸ñ¡¢¡°-¡±ºÅµÈ£©
+				// å¯¹æ‰‹æœºå·ç è¿›è¡Œé¢„å¤„ç†ï¼ˆå»æ‰å·ç å‰çš„+86ã€é¦–å°¾ç©ºæ ¼ã€â€œ-â€å·ç­‰ï¼‰
 				phone = phone.replaceAll("^(\\+86)", "");
 				phone = phone.replaceAll("^(86)", "");
 				phone = phone.replaceAll("-", "");
 				phone = phone.trim();
-				// Èç¹ûµ±Ç°ºÅÂë²¢²»ÊÇÊÖ»úºÅÂë
+				// å¦‚æœå½“å‰å·ç å¹¶ä¸æ˜¯æ‰‹æœºå·ç 
 				if (!SaleUtil.isValidPhoneNumber(phone))
-					SaleUtil.createDialog(ctx, R.string.dialog_title_tip,
-							getString(R.string.alert_contacts_error_phone));
+					Toast.makeText(ContactsActivity.this, "æ‰‹æœºå·ç éæ³•",
+							Toast.LENGTH_SHORT).show();
 				else {
-					Intent intent = new Intent();
-					intent.putExtra("phone", phone);
-					setResult(RESULT_OK, intent);
+					Intent intent;
+					// intent.putExtra("phone", phone);
+					// setResult(RESULT_OK, intent);
 					// intent.setClass(ContactsActivity.this,
 					// SendMessageActivity.class);
-					// ¹Ø±Õµ±Ç°´°¿Ú
+					// å…³é—­å½“å‰çª—å£
 					// startActivity(intent); //SEND MESSAGE
 
-					Uri smsToUri = Uri.parse("smsto:" + phone);
-
-					intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-					intent.putExtra(Intent.EXTRA_SUBJECT, "title");
-					intent.putExtra(Intent.EXTRA_TEXT, "°à³µappÏÂÔØµÄ¹Ù·½ÍøÖ·");
-
-					startActivity(intent);
+				    Uri uri = Uri.parse("smsto:" + "phone");
+				    Intent sendIntent = new Intent(Intent.ACTION_VIEW, uri);
+				    sendIntent.putExtra("sms_body", "aaaaaaaaaaaaaa");
+				    startActivity(sendIntent);
 
 				}
 			}
@@ -123,62 +121,62 @@ public class ContactsActivity extends Activity {
 	}
 
 	/**
-	 * ¼ÓÔØ²¢´æ´¢ÁªÏµÈËÊı¾İ
+	 * åŠ è½½å¹¶å­˜å‚¨è”ç³»äººæ•°æ®
 	 */
 	private void loadAndSaveContacts() {
-		progressDialog = ProgressDialog.show(ctx, null, "ÕıÔÚ¼ÓÔØÁªÏµÈËÊı¾İ...");
+		progressDialog = ProgressDialog.show(ctx, null, "æ­£åœ¨åŠ è½½è”ç³»äººæ•°æ®...");
 		new Thread() {
 			@Override
 			public void run() {
-				// »ñÈ¡ÁªÏµÈËÊı¾İ
+				// è·å–è”ç³»äººæ•°æ®
 				contactsList = findContacts();
-				// ÁÙÊ±´æ´¢ÁªÏµÈËÊı¾İ
+				// ä¸´æ—¶å­˜å‚¨è”ç³»äººæ•°æ®
 				// DBHelper.saveContacts(ctx, contactsList);
-				// ·¢ËÍÏûÏ¢Í¨Öª¸üĞÂUI
+				// å‘é€æ¶ˆæ¯é€šçŸ¥æ›´æ–°UI
 				handler.sendEmptyMessage(MESSAGE_SUCC_LOAD);
 			}
 		}.start();
 	}
 
 	/**
-	 * ¸ù¾İÌõ¼ş´Ó±¾µØÁÙÊ±¿âÖĞ»ñÈ¡ÁªÏµÈË
+	 * æ ¹æ®æ¡ä»¶ä»æœ¬åœ°ä¸´æ—¶åº“ä¸­è·å–è”ç³»äºº
 	 * 
 	 * @param keyWord
-	 *            ²éÑ¯¹Ø¼ü×Ö
+	 *            æŸ¥è¯¢å…³é”®å­—
 	 */
 	private void queryContacts(final String keyWord) {
 		new Thread() {
 			@Override
 			public void run() {
-				// »ñÈ¡ÁªÏµÈËÊı¾İ
+				// è·å–è”ç³»äººæ•°æ®
 				// contactsList = DBHelper.findContactsByCond(ctx, keyWord);
 				// ping bi diao
-				// ·¢ËÍÏûÏ¢Í¨Öª¸üĞÂUI
+				// å‘é€æ¶ˆæ¯é€šçŸ¥æ›´æ–°UI
 				handler.sendEmptyMessage(MESSAGE_SUCC_QUERY);
 			}
 		}.start();
 	}
 
 	/**
-	 * »ñÈ¡ÊÖ»úÁªÏµÈËĞÅÏ¢
+	 * è·å–æ‰‹æœºè”ç³»äººä¿¡æ¯
 	 * 
 	 * @return List<HashMap<String, String>>
 	 */
 	public List<HashMap<String, String>> findContacts() {
 		List<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-		// ²éÑ¯ÁªÏµÈË
+		// æŸ¥è¯¢è”ç³»äºº
 		Cursor contactsCursor = ctx.getContentResolver().query(
 				ContactsContract.Contacts.CONTENT_URI, null, null, null,
 				PhoneLookup.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
-		// ĞÕÃûµÄË÷Òı
+		// å§“åçš„ç´¢å¼•
 		int nameIndex = 0;
-		// ÁªÏµÈËĞÕÃû
+		// è”ç³»äººå§“å
 		String name = null;
-		// ÁªÏµÈËÍ·ÏñID
+		// è”ç³»äººå¤´åƒID
 		String photoId = null;
-		// ÁªÏµÈËµÄIDË÷ÒıÖµ
+		// è”ç³»äººçš„IDç´¢å¼•å€¼
 		String contactsId = null;
-		// ²éÑ¯ÁªÏµÈËµÄµç»°ºÅÂë
+		// æŸ¥è¯¢è”ç³»äººçš„ç”µè¯å·ç 
 		Cursor phoneCursor = null;
 		while (contactsCursor.moveToNext()) {
 			nameIndex = contactsCursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
@@ -192,19 +190,19 @@ public class ContactsActivity extends Activity {
 					null,
 					ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = "
 							+ contactsId, null, null);
-			// ±éÀúÁªÏµÈËºÅÂë£¨Ò»¸öÈË¶ÔÓ¦ÓÚ¶à¸öµç»°ºÅÂë£©
+			// éå†è”ç³»äººå·ç ï¼ˆä¸€ä¸ªäººå¯¹åº”äºå¤šä¸ªç”µè¯å·ç ï¼‰
 			while (phoneCursor.moveToNext()) {
 				HashMap<String, String> phoneMap = new HashMap<String, String>();
-				// Ìí¼ÓÁªÏµÈËĞÕÃû
+				// æ·»åŠ è”ç³»äººå§“å
 				phoneMap.put("name", name);
-				// Ìí¼ÓÁªÏµÈËÍ·Ïñ
+				// æ·»åŠ è”ç³»äººå¤´åƒ
 				phoneMap.put("photo", photoId);
-				// Ìí¼Óµç»°ºÅÂë
+				// æ·»åŠ ç”µè¯å·ç 
 				phoneMap.put(
 						"phone",
 						phoneCursor.getString(phoneCursor
 								.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-				// Ìí¼ÓºÅÂëÀàĞÍ£¨×¡Õ¬µç»°¡¢ÊÖ»úºÅÂë¡¢µ¥Î»µç»°µÈ£©
+				// æ·»åŠ å·ç ç±»å‹ï¼ˆä½å®…ç”µè¯ã€æ‰‹æœºå·ç ã€å•ä½ç”µè¯ç­‰ï¼‰
 				phoneMap.put(
 						"type",
 						getString(ContactsContract.CommonDataKinds.Phone.getTypeLabelResource(phoneCursor.getInt(phoneCursor
@@ -218,7 +216,7 @@ public class ContactsActivity extends Activity {
 	}
 
 	/**
-	 * ×Ô¶¨ÒåÁªÏµÈËAdapter
+	 * è‡ªå®šä¹‰è”ç³»äººAdapter
 	 */
 	class ContactsAdapter extends BaseAdapter {
 		private LayoutInflater inflater = null;
@@ -243,7 +241,7 @@ public class ContactsActivity extends Activity {
 			ViewHolder holder = null;
 			if (convertView == null) {
 				holder = new ViewHolder();
-				convertView = inflater.inflate(R.layout.activity_list, null);
+				convertView = inflater.inflate(R.layout.list_contacts, null);
 				holder.text1 = (TextView) convertView.findViewById(R.id.text1);
 				holder.text2 = (TextView) convertView.findViewById(R.id.text2);
 				holder.text3 = (TextView) convertView.findViewById(R.id.text3);

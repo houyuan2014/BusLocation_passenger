@@ -1,4 +1,4 @@
-package cn.cas.sict.BusLocation_passenger;
+package cn.cas.sict.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,8 +7,6 @@ import java.util.TimerTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import cn.cas.sict.utils.HttpUtil;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -38,7 +36,7 @@ public class MyService extends Service implements AMapLocationListener {
 	double userLat, userLng, busLat, busLng;
 	LatLng userLL, busLL;
 	Map<String, Object> mapRoute;
-	Timer timer = new Timer(); // ¶¨Òå¶¨Ê±Æ÷¡¢¶¨Ê±Æ÷ÈÎÎñ¼°Handler¾ä±ú
+	Timer timer = new Timer(); // å®šä¹‰å®šæ—¶å™¨ã€å®šæ—¶å™¨ä»»åŠ¡åŠHandlerå¥æŸ„
 	MyTimerTask timerTask;
 	MyHandler handler = new MyHandler();
 	BroadcastReceiver receiver;
@@ -87,18 +85,18 @@ public class MyService extends Service implements AMapLocationListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		// start timer
-		user = (User) intent.getSerializableExtra("user");
+		user = User.getUser();
 		if (timer != null) {
 			if (timerTask != null) {
-				timerTask.cancel(); // ½«Ô­ÈÎÎñ´Ó¶ÓÁĞÖĞÉ¾³ı
+				timerTask.cancel(); // å°†åŸä»»åŠ¡ä»é˜Ÿåˆ—ä¸­åˆ é™¤
 			}
 		}
 		/**
-		 * ×¢Òâ£º Ã¿´Î·ÅÈÎÎñ¶¼ÒªĞÂ½¨Ò»¸öÈÎÎñ¶ÔÏó£¬·ñÔò³öÏÖÒ»ÏÂ´íÎó£º ERROR/AndroidRuntime(11761):
+		 * æ³¨æ„ï¼š æ¯æ¬¡æ”¾ä»»åŠ¡éƒ½è¦æ–°å»ºä¸€ä¸ªä»»åŠ¡å¯¹è±¡ï¼Œå¦åˆ™å‡ºç°ä¸€ä¸‹é”™è¯¯ï¼š ERROR/AndroidRuntime(11761):
 		 * java.lang.IllegalStateException: TimerTask is scheduled already
-		 * ËùÒÔÍ¬Ò»¸ö¶¨Ê±Æ÷ÈÎÎñÖ»ÄÜ±»·ÅÖÃÒ»´Î
+		 * æ‰€ä»¥åŒä¸€ä¸ªå®šæ—¶å™¨ä»»åŠ¡åªèƒ½è¢«æ”¾ç½®ä¸€æ¬¡
 		 */
-		timerTask = new MyTimerTask(); // ĞÂ½¨Ò»¸öÈÎÎñ£¨±ØĞë£©
+		timerTask = new MyTimerTask(); // æ–°å»ºä¸€ä¸ªä»»åŠ¡ï¼ˆå¿…é¡»ï¼‰
 		timer.scheduleAtFixedRate(timerTask, 0, 6000);
 
 		return super.onStartCommand(intent, flags, startId);
@@ -125,10 +123,10 @@ public class MyService extends Service implements AMapLocationListener {
 
 	class MyHandler extends Handler {
 		public void handleMessage(Message msg) {
-			if (msg.what == 3) { // Ö´ĞĞ¶¨Ê±ÈÎÎñ
-				
-				System.out.println(user.toString());
-				
+			if (msg.what == 3) { // æ‰§è¡Œå®šæ—¶ä»»åŠ¡
+
+				System.out.println("---service---" + user.toString());
+
 				mapRoute = new HashMap<String, Object>();
 				mapRoute.put("route", user.getRouteNum() + "");
 				try {
@@ -139,7 +137,7 @@ public class MyService extends Service implements AMapLocationListener {
 						busLng = Double.parseDouble(jsonObj.getString("lng"));
 						busLL = new LatLng(busLat, busLng);
 						String busLoc = jsonObj.getString("desc");
-						// ÏòuiÏß³Ì·¢ËÍÏûÏ¢
+						// å‘uiçº¿ç¨‹å‘é€æ¶ˆæ¯
 						Intent in0 = new Intent(Values.BROADCASTTOUI);
 						in0.putExtra("flag", Values.BUSFLAG);
 						in0.putExtra("lat", busLat);

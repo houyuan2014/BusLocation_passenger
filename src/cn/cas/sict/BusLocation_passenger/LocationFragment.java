@@ -1,5 +1,8 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import cn.cas.sict.utils.User;
+import cn.cas.sict.utils.Values;
+
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.AMap.OnInfoWindowClickListener;
 import com.amap.api.maps2d.CameraUpdateFactory;
@@ -43,10 +46,8 @@ public class LocationFragment extends Fragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		user = (User) getArguments().getSerializable("user");
-		Intent in0 = new Intent(Values.BROADCASTTOSERVICE);
-		in0.putExtra("flag", Values.GETSERVICEINFO);
-		getActivity().sendBroadcast(in0);
+		user = User.getUser();
+
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(Values.BROADCASTTOUI);
 		receiver = new BroadcastReceiver() {
@@ -70,24 +71,27 @@ public class LocationFragment extends Fragment implements
 					break;
 				case Values.DISTANCEFLAG:
 					getActivity().setTitle(
-							" Ïà¾à "
+							" ç›¸è· "
 									+ (int) arg1.getFloatExtra(
-											"currentdistance", -1) + "Ã×");
+											"currentdistance", -1) + "ç±³");
 					break;
 				case Values.BUSDISABLE:
-					getActivity().setTitle("°à³µÎ»ÖÃ²»¿ÉÓÃ");
+					getActivity().setTitle("ç­è½¦ä½ç½®ä¸å¯ç”¨");
 					break;
 				}
 			}
 		};
 		getActivity().registerReceiver(receiver, filter);
+		Intent in0 = new Intent(Values.BROADCASTTOSERVICE);
+		in0.putExtra("flag", Values.GETSERVICEINFO);
+		getActivity().sendBroadcast(in0);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		// ¼ÓÔØ²¼¾ÖÎÄ¼ş
+		// åŠ è½½å¸ƒå±€æ–‡ä»¶
 		View rootView = inflater.inflate(R.layout.fragment_location, container,
 				false);
 		mapView = (MapView) rootView.findViewById(R.id.map);
@@ -149,7 +153,7 @@ public class LocationFragment extends Fragment implements
 						16));
 				busMarker.showInfoWindow();
 			} else {
-				Toast.makeText(getActivity(), "»ñÈ¡ÖĞ", Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "è·å–ä¸­", Toast.LENGTH_LONG).show();
 			}
 			break;
 		case R.id.bt_userloc:
@@ -158,15 +162,15 @@ public class LocationFragment extends Fragment implements
 						16));
 				userMarker.showInfoWindow();
 			} else {
-				Toast.makeText(getActivity(), "¶¨Î»ÖĞ", Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), "å®šä½ä¸­", Toast.LENGTH_LONG).show();
 			}
 			break;
 		case R.id.bt_traffic:
 			if (map.isTrafficEnabled()) {
-				bt_traffic.setText("ÏÔÊ¾Â·¿ö");
+				bt_traffic.setText("æ˜¾ç¤ºè·¯å†µ");
 				map.setTrafficEnabled(false);
 			} else {
-				bt_traffic.setText("Òş²ØÂ·¿ö");
+				bt_traffic.setText("éšè—è·¯å†µ");
 				map.setTrafficEnabled(true);
 
 			}

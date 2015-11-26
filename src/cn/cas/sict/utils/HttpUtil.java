@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 public class HttpUtil {
-	// 创建HttpClient对象
+	// 鍒涘缓HttpClient瀵硅薄
 	public static HttpClient httpClient = new DefaultHttpClient();
 	public static String BASE_URL = "http://Todolist.f3322.net/JSON_Service/";
 	static String result;
@@ -46,7 +46,7 @@ public class HttpUtil {
 
 						HttpResponse httpResponse = httpClient.execute(post);
 						if (httpResponse.getStatusLine().getStatusCode() == 200) {
-							// 获取服务器响应字符串
+							// 鑾峰彇鏈嶅姟鍣ㄥ搷搴斿瓧绗︿覆
 							result = EntityUtils.toString(httpResponse
 									.getEntity());
 							return result;
@@ -71,11 +71,11 @@ public class HttpUtil {
 
 		Log.i("test", "sendjsonstring   " + json.toString());
 
-		// 发送POST请求
+		// 鍙戦�丳OST璇锋眰
 		// HttpResponse httpResponse;
 		// httpResponse = httpClient.execute(post);
 		// if (httpResponse.getStatusLine().getStatusCode() == 200) {
-		// // 获取服务器响应字符串
+		// // 鑾峰彇鏈嶅姟鍣ㄥ搷搴斿瓧绗︿覆
 		// result = EntityUtils.toString(httpResponse.getEntity());
 		// return result;
 		// }
@@ -85,9 +85,10 @@ public class HttpUtil {
 		m.put("lat", "" + lat);
 		m.put("lng", "" + lng);
 		lng = lng + 0.001;
-		m.put("desc", "在中关村附近");
+		m.put("desc", "鍦╔XX闄勮繎");
 		m.put("flag", "true");
 		JSONObject js = new JSONObject(m);
+		Log.i("test", "receivejsonstring   " + js.toString());
 		return js.toString();
 	}
 }

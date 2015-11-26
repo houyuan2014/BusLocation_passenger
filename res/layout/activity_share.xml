@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:drawableTop="@drawable/p"
+        android:drawableTop="@drawable/ic_contacts"
         android:text="联系人" />
 
     <Button
@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:drawableTop="@drawable/c"
+        android:drawableTop="@drawable/ic_moment"
         android:text="朋友圈" />
 
     <Button
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:drawableTop="@drawable/w"
+        android:drawableTop="@drawable/ic_wechat"
         android:text="好友" />
 
 </RelativeLayout>

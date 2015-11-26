@@ -9,8 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="25dp"
-        android:src="@drawable/sict_logo" />
+        android:layout_marginTop="25sp"
+        android:src="@drawable/im_sict_logo" />
 
     <TextView
         android:id="@+id/tv_weather"

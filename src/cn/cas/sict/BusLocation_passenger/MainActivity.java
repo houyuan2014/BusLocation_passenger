@@ -1,11 +1,16 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import cn.cas.sict.utils.MyService;
+import cn.cas.sict.utils.User;
+import cn.cas.sict.utils.Values;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
@@ -15,36 +20,71 @@ public class MainActivity extends FragmentActivity implements
 	private RadioGroup rg_tab_menu;
 	private Intent intent;
 	private User user;
+	private FragmentManager fm;
+	private LocationFragment locationFragment;
+	private BookFragment bookFragment;
+	private SetFragment setFragment;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		user = (User) getIntent().getSerializableExtra("user");
+		user = User.getUser();
+		fm = getSupportFragmentManager();
 		rg_tab_menu = (RadioGroup) findViewById(R.id.tab_menu);
 		rg_tab_menu.setOnCheckedChangeListener(this);
 		intent = new Intent(this, MyService.class);
-		intent.putExtra("user", user);
 		startService(intent);
-		goToLocationFragment();
+		setDefaultFragment();
 
+	}
+
+	private void setDefaultFragment() {
+		onCheckedChanged(rg_tab_menu, R.id.rg_bus_location);
 	}
 
 	@Override
 	public void onCheckedChanged(RadioGroup arg0, int arg1) {
-		// TODO Auto-generated method stub
+		FragmentTransaction ft = fm.beginTransaction();
+		if (locationFragment != null) {
+			ft.hide(locationFragment);
+		}
+		if (bookFragment != null) {
+			ft.hide(bookFragment);
+		}
+		if (setFragment != null) {
+			ft.hide(setFragment);
+		}
 		switch (arg1) {
 		case R.id.rg_bus_location:
-			goToLocationFragment();
+			setTitle("定位");
+			if (locationFragment == null) {
+				locationFragment = new LocationFragment();
+				ft.add(R.id.main_content, locationFragment);
+			} else {
+				ft.show(locationFragment);
+			}
 			break;
 		case R.id.rg_book:
-			goToBookFragment();
+			setTitle("预定");
+			if (bookFragment == null) {
+				bookFragment = new BookFragment();
+				ft.add(R.id.main_content, bookFragment);
+			} else {
+				ft.show(bookFragment);
+			}
 			break;
 		case R.id.rg_me:
-			goToSetFragment();
+			setTitle("我");
+			if (setFragment == null) {
+				setFragment = new SetFragment();
+				ft.add(R.id.main_content, setFragment);
+			} else {
+				ft.show(setFragment);
+			}
 		default:
 			break;
 		}
-
+		ft.commit();
 	}
 
 	public void saveUserData() {
@@ -61,35 +101,23 @@ public class MainActivity extends FragmentActivity implements
 
 	}
 
-	private void goToLocationFragment() {
-		setTitle("��λ");
-		LocationFragment l = new LocationFragment();
-		Bundle b = new Bundle();
-		b.putSerializable("user", user);
-		l.setArguments(b);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.main_content, l).commit();
-	}
-
-	private void goToBookFragment() {
-		setTitle("��λ");
-		BookFragment fra = new BookFragment();
-		Bundle b = new Bundle();
-		b.putSerializable("user", user);
-		fra.setArguments(b);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.main_content, fra).commit();
-	}
-
-	private void goToSetFragment() {
-		setTitle("��");
-		SetFragment fra = new SetFragment();
-		Bundle b = new Bundle();
-		b.putSerializable("user", user);
-		fra.setArguments(b);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.main_content, fra).commit();
-	}
+	// private void goToLocationFragment() {
+	// setTitle("定位");
+	// getSupportFragmentManager().beginTransaction()
+	// .replace(R.id.main_content, locationFragment).commit();
+	// }
+	//
+	// private void goToBookFragment() {
+	// setTitle("预定");
+	// getSupportFragmentManager().beginTransaction()
+	// .replace(R.id.main_content, bookFragment).commit();
+	// }
+	//
+	// private void goToSetFragment() {
+	// setTitle("我");
+	// getSupportFragmentManager().beginTransaction()
+	// .replace(R.id.main_content, setFragment).commit();
+	// }
 
 	@Override
 	protected void onDestroy() {

@@ -1,5 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
+import cn.cas.sict.utils.User;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,13 +12,16 @@ import android.widget.EditText;
 public class NameActivity extends Activity {
 	private EditText et_Name;
 	private String name;
-	User user;
+	private ActionBar ab;
+	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_name);
-		user = (User) getIntent().getSerializableExtra("user");
+		ab = getActionBar();
+		ab.setDisplayHomeAsUpEnabled(true);
+		user = User.getUser();
 		et_Name = (EditText) findViewById(R.id.name);
 		et_Name.setText(user.getName());
 
@@ -31,15 +36,21 @@ public class NameActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
-
-		name = et_Name.getText().toString().trim();
-		if (name.equals(user.getName())) {
+		switch (item.getItemId()) {
+		case R.id.menu_save_name:
+			name = et_Name.getText().toString().trim();
+			if (name.equals(user.getName())) {
+				finish();
+			} else {
+				user.setName(name);
+				finish();
+			}
+			break;
+		case android.R.id.home:
 			finish();
-		} else {
-			user.setName(name);
-			finish();
+			break;
 		}
+
 		return super.onOptionsItemSelected(item);
 	}
 }

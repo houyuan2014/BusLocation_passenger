@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import cn.cas.sict.utils.HttpUtil;
+import cn.cas.sict.utils.User;
+import cn.cas.sict.utils.Values;
 
 public class FirstActivity extends Activity {
 	SharedPreferences sP;
@@ -36,16 +38,18 @@ public class FirstActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first);
-		readDataToUser();
-		if(user.getPhone().equals("")){
-			goToWelcome();
-		}else{
-			goToLogin();
+		sP = getSharedPreferences(Values.SP_NAME, Context.MODE_PRIVATE);
+		User.initUser(sP);
+		user = User.getUser();
+		if (user.getPhone().equals("")) {
+			welcome();
+		} else {
+			login();
 		}
 
 	}
 
-	private void goToWelcome() {
+	private void welcome() {
 		viewpager = (ViewPager) findViewById(R.id.viewpager);
 		chun = LayoutInflater.from(this).inflate(R.layout.first_chun, null);
 		xia = LayoutInflater.from(this).inflate(R.layout.first_xia, null);
@@ -57,7 +61,7 @@ public class FirstActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				goToLogin();
+				login();
 			}
 		});
 		viewContainter.add(chun);
@@ -105,26 +109,26 @@ public class FirstActivity extends Activity {
 		});
 	}
 
-	private void readDataToUser() {
-		user = new User();
-		sP = getSharedPreferences(Values.SP_NAME, Context.MODE_PRIVATE);
-		String phone = sP.getString("phone", "");
-		String passwd = sP.getString("passwd", "");
-		String name = sP.getString("name", "");
-		int routeNum = sP.getInt("route", 1);
-		String routePhone = sP.getString("routephone", "");
-		String routeName = sP.getString("routename", "“ª∫≈œﬂ");
-		boolean isRemind = sP.getBoolean("remind", true);
-		float remindDistance = sP.getFloat("reminddistance", 3000);
-		user.setPhone(phone);
-		user.setPasswd(passwd);
-		user.setName(name);
-		user.setRouteNum(routeNum);
-		user.setRoutePhone(routePhone);
-		user.setRouteName(routeName);
-		user.setRemind(isRemind);
-		user.setRemindDistance(remindDistance);
-	}
+	// private void readDataToUser() {
+	// user = new User();
+	// sP = getSharedPreferences(Values.SP_NAME, Context.MODE_PRIVATE);
+	// String phone = sP.getString("phone", "");
+	// String passwd = sP.getString("passwd", "");
+	// String name = sP.getString("name", "");
+	// int routeNum = sP.getInt("route", 1);
+	// String routePhone = sP.getString("routephone", "13655665566");
+	// String routeName = sP.getString("routename", "‰∏ÄÂè∑Á∫ø");
+	// boolean isRemind = sP.getBoolean("remind", true);
+	// float remindDistance = sP.getFloat("reminddistance", 3000);
+	// user.setPhone(phone);
+	// user.setPasswd(passwd);
+	// user.setName(name);
+	// user.setRouteNum(routeNum);
+	// user.setRoutePhone(routePhone);
+	// user.setRouteName(routeName);
+	// user.setRemind(isRemind);
+	// user.setRemindDistance(remindDistance);
+	// }
 
 	private void goToMain() {
 		Map<String, String> m = new HashMap<String, String>();
@@ -141,7 +145,7 @@ public class FirstActivity extends Activity {
 				startActivity(in);
 				finish();
 			} else {
-				goToLogin();
+				login();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -149,7 +153,7 @@ public class FirstActivity extends Activity {
 
 	}
 
-	private void goToLogin() {
+	private void login() {
 		Thread t = new Thread(new Runnable() {
 
 			@Override
@@ -158,7 +162,7 @@ public class FirstActivity extends Activity {
 					Thread.sleep(2000);
 					Intent in = new Intent();
 					in.setClass(FirstActivity.this, LoginActivity.class);
-					in.putExtra("user", user);
+					// in.putExtra("user", user);
 					startActivity(in);
 					finish();
 				} catch (InterruptedException e) {

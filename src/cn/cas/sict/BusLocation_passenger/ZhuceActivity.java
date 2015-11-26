@@ -1,6 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
 import cn.cas.sict.utils.SaleUtil;
+import cn.cas.sict.utils.User;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +22,7 @@ public class ZhuceActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_zhuce);
-		user = (User) getIntent().getSerializableExtra("user");
+		user = User.getUser();
 		Spinner spinner = (Spinner) findViewById(R.id.route);
 		btZhuCe = (Button) findViewById(R.id.bt_logup);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -74,17 +75,17 @@ public class ZhuceActivity extends Activity {
 				if (psw.equals(psw1)) {
 					return true;
 				} else {
-					Toast.makeText(ZhuceActivity.this, "ÃÜÂë²»Ò»ÖÂ£¬ÇëÖØĞÂÊäÈë£¡",
+					Toast.makeText(ZhuceActivity.this, "å¯†ç ä¸ä¸€è‡´ï¼Œè¯·é‡æ–°è¾“å…¥ï¼",
 							Toast.LENGTH_LONG).show();
 					((EditText) findViewById(R.id.psw)).setText("");
 					((EditText) findViewById(R.id.psw1)).setText("");
 				}
 			} else {
-				Toast.makeText(ZhuceActivity.this, "Çë½«×¢²áĞÅÏ¢ÊäÈëÍêÕû£¡£¡£¡",
+				Toast.makeText(ZhuceActivity.this, "è¯·å°†æ³¨å†Œä¿¡æ¯è¾“å…¥å®Œæ•´ï¼ï¼ï¼",
 						Toast.LENGTH_LONG).show();
 			}
 		} else {
-			Toast.makeText(ZhuceActivity.this, "ÇëÊäÈë11Î»ÊÖ»úºÅ£¡£¡£¡",
+			Toast.makeText(ZhuceActivity.this, "è¯·è¾“å…¥11ä½æ‰‹æœºå·ï¼ï¼ï¼",
 					Toast.LENGTH_LONG).show();
 			((EditText) findViewById(R.id.tel)).setText("");
 			((EditText) findViewById(R.id.tel)).requestFocus();

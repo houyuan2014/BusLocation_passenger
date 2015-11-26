@@ -1,4 +1,4 @@
-package cn.cas.sict.BusLocation_passenger;
+Ôªøpackage cn.cas.sict.BusLocation_passenger;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,19 +19,19 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 public class ShareActivity extends Activity {
 	private IWXAPI wxApi;
-    private Button f,c,p;
+	private Button f, c, p;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_share);
-		f=(Button)findViewById(R.id.w_share);
-		c=(Button)findViewById(R.id.c_share);
-		p=(Button)findViewById(R.id.p_share);
-		wxApi = WXAPIFactory.createWXAPI(this, Constants._ID);  
-		wxApi.registerApp(Constants._ID);  
-		
-		
-		f.setOnClickListener(new OnClickListener(){
+		f = (Button) findViewById(R.id.w_share);
+		c = (Button) findViewById(R.id.c_share);
+		p = (Button) findViewById(R.id.p_share);
+		wxApi = WXAPIFactory.createWXAPI(this, Constants._ID);
+		wxApi.registerApp(Constants._ID);
+
+		f.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -39,9 +39,9 @@ public class ShareActivity extends Activity {
 				wechatShare(0);
 				finish();
 			}
-			
+
 		});
-		c.setOnClickListener(new OnClickListener(){
+		c.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -49,50 +49,43 @@ public class ShareActivity extends Activity {
 				wechatShare(1);
 				finish();
 			}
-			
+
 		});
-		p.setOnClickListener(new OnClickListener(){
+		p.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				
-				Uri smsToUri = Uri.parse("smsto:");
-				Intent intent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-				intent.putExtra(Intent.EXTRA_SUBJECT, "title");
-				intent.putExtra(Intent.EXTRA_TEXT, "∞‡≥µappœ¬‘ÿµƒπŸ∑ΩÕ¯÷∑");
-				startActivity(intent);
-				finish();
-				
-//				Intent in=new Intent();
-//				in.setClass(ShareActivity.this, ContactsActivity.class);
-//				startActivity(in);
+
+				  Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+				    sendIntent.putExtra("sms_body", "Áè≠ËΩ¶APP‰∏ãËΩΩÂú∞ÂùÄ");
+				    sendIntent.setType("vnd.android-dir/mms-sms");
+			    startActivity(sendIntent);
+
+				// Intent in=new Intent();
+				// in.setClass(ShareActivity.this, ContactsActivity.class);
+				// startActivity(in);
+				// finish();
 			}
-			
+
 		});
-//		cancel.setOnClickListener(new OnClickListener(){
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				finish();
-//			}
-//			
-//		});
+
 	}
-	private void wechatShare(int flag){  
-		   WXWebpageObject webpage = new WXWebpageObject();  
-		   webpage.webpageUrl = "∞‡≥µappπŸ∑Ωœ¬‘ÿµÿ÷∑";  
-	       WXMediaMessage msg = new WXMediaMessage(webpage);  
-		   msg.title = "∞‡≥µ";  
-		   msg.description = "ÀÊ ±∂®Œª";  
-		   Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.che1);  
-		   msg.setThumbImage(thumb);  
-		   SendMessageToWX.Req req = new SendMessageToWX.Req();  
-		   req.transaction = String.valueOf(System.currentTimeMillis());  
-		   req.message = msg;  
-		   req.scene = flag==0?SendMessageToWX.Req.WXSceneSession:SendMessageToWX.Req.WXSceneTimeline;  
-		   wxApi.sendReq(req);  
-		}  
+
+	private void wechatShare(int flag) {
+		WXWebpageObject webpage = new WXWebpageObject();
+		webpage.webpageUrl = "Áè≠ËΩ¶appÂÆòÊñπ‰∏ãËΩΩÂú∞ÂùÄ";
+		WXMediaMessage msg = new WXMediaMessage(webpage);
+		msg.title = "Áè≠ËΩ¶";
+		msg.description = "ÈöèÊó∂ÂÆö‰Ωç";
+		Bitmap thumb = BitmapFactory.decodeResource(getResources(),
+				R.drawable.che1);
+		msg.setThumbImage(thumb);
+		SendMessageToWX.Req req = new SendMessageToWX.Req();
+		req.transaction = String.valueOf(System.currentTimeMillis());
+		req.message = msg;
+		req.scene = flag == 0 ? SendMessageToWX.Req.WXSceneSession
+				: SendMessageToWX.Req.WXSceneTimeline;
+		wxApi.sendReq(req);
+	}
 
 }

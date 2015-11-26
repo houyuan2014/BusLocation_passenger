@@ -1,9 +1,11 @@
-package cn.cas.sict.BusLocation_passenger;
+ï»¿package cn.cas.sict.BusLocation_passenger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.cas.sict.utils.User;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -20,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 
 public class SetFragment extends Fragment {
 	private ListView list;
@@ -31,7 +34,7 @@ public class SetFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		user = (User) getArguments().getSerializable("user");
+		user = User.getUser();
 
 	}
 
@@ -62,51 +65,51 @@ public class SetFragment extends Fragment {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				switch (position) {
-				
-				// ÊÖ»úºÅ
+
+				// æ‰‹æœºå·
 				case 0:
 					break;
-				// ĞÕÃû
+				// å§“å
 				case 1:
 					Intent in0 = new Intent(getActivity(), NameActivity.class);
-					in0.putExtra("user", user);
+					// in0.putExtra("user", user);
 					startActivity(in0);
 					break;
-				// Â·Ïß
+				// è·¯çº¿
 				case 2:
-					final String[] items = new String[] { "Ò»ºÅÏß", "¶şºÅÏß", "ÈıºÅÏß",
-							"ËÄºÅÏß" };
+					final String[] items = new String[] { "ä¸€å·çº¿", "äºŒå·çº¿", "ä¸‰å·çº¿",
+							"å››å·çº¿" };
 					Builder builder = new AlertDialog.Builder(getActivity());
 					builder.setIcon(R.drawable.che1);
-					builder.setTitle("ÇëÄúÑ¡ÔñÒª¶¨Î»µÄ°à³µÂ·Ïß£º");
+					builder.setTitle("è¯·æ‚¨é€‰æ‹©è¦å®šä½çš„ç­è½¦è·¯çº¿ï¼š");
 					builder.setItems(items, new OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialog, int routeNum) {
-							// Ğ´ÈëÓÃ»§ÅäÖÃÎÄ¼ş
+							// å†™å…¥ç”¨æˆ·é…ç½®æ–‡ä»¶
 							user.setRouteName(items[routeNum]);
 							user.setRouteNum(routeNum + 1);
-							// µ÷ÓÃË¢ĞÂ£¬Â·Ïß¸Ä±ä
+							// è°ƒç”¨åˆ·æ–°ï¼Œè·¯çº¿æ”¹å˜
 							onResume();
 						}
 					});
 					builder.create().show();
 					break;
-				// ÌáĞÑ
+				// æé†’
 				case 3:
 					Intent in1 = new Intent(getActivity(), RemindActivity.class);
-					in1.putExtra("user", user);
+					// in1.putExtra("user", user);
 					startActivity(in1);
 					break;
-				// ·´À¡
+				// åé¦ˆ
 				case 4:
 					Intent in2 = new Intent(getActivity(), AdviceActivity.class);
 					startActivity(in2);
 					break;
-				// ×¢Ïú
+				// æ³¨é”€
 				case 5:
 					Intent in3 = new Intent(getActivity(), LoginActivity.class);
-					in3.putExtra("user", user);
+					// in3.putExtra("user", user);
 					startActivity(in3);
 					getActivity().finish();
 				}
@@ -126,13 +129,13 @@ public class SetFragment extends Fragment {
 		String phone = user.getPhone();
 		String name = user.getName();
 		String routename = user.getRouteName();
-		String remindStr;// ĞŞ¸Ä
+		String remindStr;// ä¿®æ”¹
 		if (user.getIsRemind()) {
-			remindStr = user.getRemindDistance() + "Ã×";
+			remindStr = user.getRemindDistance() + "ç±³";
 		} else {
-			remindStr = "¹Ø";
+			remindStr = "å…³";
 		}
-		String[] titles = new String[] { "ÊÖ»úºÅ", "ĞÕÃû", "Â·Ïß", "ÌáĞÑ", "·´À¡", "×¢Ïú" };
+		String[] titles = new String[] { "æ‰‹æœºå·", "å§“å", "è·¯çº¿", "æé†’", "åé¦ˆ", "æ³¨é”€" };
 		String[] contents = new String[] { phone, name, routename, remindStr,
 				"", "" };
 		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
