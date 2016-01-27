@@ -1,8 +1,8 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import cn.cas.sict.utils.MyService;
-import cn.cas.sict.utils.User;
-import cn.cas.sict.utils.Values;
+import cn.cas.sict.domain.User;
+import cn.cas.sict.service.MyService;
+import cn.cas.sict.utils.Globals;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +28,7 @@ public class MainActivity extends FragmentActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		//User.initUser(getSharedPreferences(Globals.SP_NAME,Context.MODE_PRIVATE));
 		user = User.getUser();
 		fm = getSupportFragmentManager();
 		rg_tab_menu = (RadioGroup) findViewById(R.id.tab_menu);
@@ -86,38 +87,16 @@ public class MainActivity extends FragmentActivity implements
 		}
 		ft.commit();
 	}
-
+	
+	
 	public void saveUserData() {
-		SharedPreferences sP = getSharedPreferences(Values.SP_NAME,
+		SharedPreferences sP = getSharedPreferences(Globals.SP_NAME,
 				Context.MODE_PRIVATE);
 		Editor editor = sP.edit();
-		editor.putString("phone", user.getPhone())
-				.putString("passwd", user.getPasswd())
-				.putString("name", user.getName())
-				.putInt("route", user.getRouteNum())
-				.putString("routephone", user.getRoutePhone())
-				.putBoolean("remind", user.getIsRemind())
-				.putFloat("reminddistance", user.getRemindDistance()).commit();
+		user.save(editor);
+		
 
 	}
-
-	// private void goToLocationFragment() {
-	// setTitle("定位");
-	// getSupportFragmentManager().beginTransaction()
-	// .replace(R.id.main_content, locationFragment).commit();
-	// }
-	//
-	// private void goToBookFragment() {
-	// setTitle("预定");
-	// getSupportFragmentManager().beginTransaction()
-	// .replace(R.id.main_content, bookFragment).commit();
-	// }
-	//
-	// private void goToSetFragment() {
-	// setTitle("我");
-	// getSupportFragmentManager().beginTransaction()
-	// .replace(R.id.main_content, setFragment).commit();
-	// }
 
 	@Override
 	protected void onDestroy() {

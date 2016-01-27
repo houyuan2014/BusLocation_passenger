@@ -5,6 +5,8 @@
     android:layout_margin="7dp"
     android:orientation="vertical" >
 
+
+
     <EditText
         android:id="@+id/advice"
         android:layout_width="match_parent"

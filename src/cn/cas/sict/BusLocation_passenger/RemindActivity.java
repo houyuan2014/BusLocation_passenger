@@ -1,6 +1,6 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import cn.cas.sict.utils.User;
+import cn.cas.sict.domain.User;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -33,7 +33,7 @@ public class RemindActivity extends Activity implements
 		// ！务必先初始化再操作
 		user = User.getUser();
 		remindDistance = (int) user.getRemindDistance();
-		isRemind = user.getIsRemind();
+		isRemind = user.isRemind();
 		switcher = (Switch) findViewById(R.id.switcher);
 		seekbar = (SeekBar) findViewById(R.id.seekbar_distance);
 		tv_remindDistance = (TextView) findViewById(R.id.tv_reminddistance);

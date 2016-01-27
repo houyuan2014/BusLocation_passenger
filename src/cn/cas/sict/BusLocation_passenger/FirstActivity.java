@@ -1,9 +1,9 @@
 package cn.cas.sict.BusLocation_passenger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -17,57 +17,76 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import cn.cas.sict.domain.User;
 import cn.cas.sict.utils.HttpUtil;
-import cn.cas.sict.utils.User;
-import cn.cas.sict.utils.Values;
+import cn.cas.sict.utils.Globals;
 
 public class FirstActivity extends Activity {
 	SharedPreferences sP;
 	String phone, passwd, routeNum;
 	User user;
 	ViewPager viewpager;
-	// Button button;
-	View chun, xia, qiu;
-	FrameLayout dong;
-	Button dong_button;
+	View welcome1, welcome2, welcome3;
+	FrameLayout welcome4;
+	View welcome4_button;
 	ArrayList<View> viewContainter = new ArrayList<View>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first);
-		sP = getSharedPreferences(Values.SP_NAME, Context.MODE_PRIVATE);
-		User.initUser(sP);
+		User.initUser(getSharedPreferences(Globals.SP_NAME,
+				Context.MODE_PRIVATE));
 		user = User.getUser();
-		if (user.getPhone().equals("")) {
+		System.out.println(user);
+		if (user.getTel().equals("")) {
 			welcome();
 		} else {
-			login();
+			try {
+				JSONObject json = new JSONObject();
+				json.put("tel", user.getTel());
+				String url = "FindAllBCServlet";
+				String str = HttpUtil.sendPost(url, json);
+				user.setJsonRouteList(str);
+				//System.out.println(user);
+				Intent in = new Intent(FirstActivity.this, MainActivity.class);
+				startActivity(in);
+				finish();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
 
 	private void welcome() {
 		viewpager = (ViewPager) findViewById(R.id.viewpager);
-		chun = LayoutInflater.from(this).inflate(R.layout.first_chun, null);
-		xia = LayoutInflater.from(this).inflate(R.layout.first_xia, null);
-		qiu = LayoutInflater.from(this).inflate(R.layout.first_qiu, null);
-		dong = (FrameLayout) LayoutInflater.from(this).inflate(
-				R.layout.first_dong, null);
-		dong_button = (Button) dong.findViewById(R.id.dong_button);
-		dong_button.setOnClickListener(new OnClickListener() {
+		welcome1 = LayoutInflater.from(this).inflate(R.layout.first_welcome1,
+				null);
+		welcome2 = LayoutInflater.from(this).inflate(R.layout.first_welcome2,
+				null);
+		welcome3 = LayoutInflater.from(this).inflate(R.layout.first_welcome3,
+				null);
+		welcome4 = (FrameLayout) LayoutInflater.from(this).inflate(
+				R.layout.first_welcome4, null);
+		welcome4_button = (View) welcome4.findViewById(R.id.dong_button);
+		welcome4_button.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				login();
+				Intent in = new Intent(FirstActivity.this,
+						RegisterActivity.class);
+				startActivity(in);
+				finish();
 			}
 		});
-		viewContainter.add(chun);
-		viewContainter.add(xia);
-		viewContainter.add(qiu);
-		viewContainter.add(dong);
+		viewContainter.add(welcome1);
+		viewContainter.add(welcome2);
+		viewContainter.add(welcome3);
+		viewContainter.add(welcome4);
 
 		viewpager.setAdapter(new PagerAdapter() {
 
@@ -107,70 +126,6 @@ public class FirstActivity extends Activity {
 			}
 
 		});
-	}
-
-	// private void readDataToUser() {
-	// user = new User();
-	// sP = getSharedPreferences(Values.SP_NAME, Context.MODE_PRIVATE);
-	// String phone = sP.getString("phone", "");
-	// String passwd = sP.getString("passwd", "");
-	// String name = sP.getString("name", "");
-	// int routeNum = sP.getInt("route", 1);
-	// String routePhone = sP.getString("routephone", "13655665566");
-	// String routeName = sP.getString("routename", "一号线");
-	// boolean isRemind = sP.getBoolean("remind", true);
-	// float remindDistance = sP.getFloat("reminddistance", 3000);
-	// user.setPhone(phone);
-	// user.setPasswd(passwd);
-	// user.setName(name);
-	// user.setRouteNum(routeNum);
-	// user.setRoutePhone(routePhone);
-	// user.setRouteName(routeName);
-	// user.setRemind(isRemind);
-	// user.setRemindDistance(remindDistance);
-	// }
-
-	private void goToMain() {
-		Map<String, String> m = new HashMap<String, String>();
-		m.put("phone", phone);
-		m.put("pass", passwd);
-		m.put("route", routeNum);
-		try {
-			String str = HttpUtil.sendPost("", m);
-			JSONObject js = new JSONObject(str);
-			if (js.get("register").equals("success")) {
-				String routePhone = js.getString("busphone");
-				user.setRoutePhone(routePhone);
-				Intent in = new Intent(FirstActivity.this, MainActivity.class);
-				startActivity(in);
-				finish();
-			} else {
-				login();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private void login() {
-		Thread t = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(2000);
-					Intent in = new Intent();
-					in.setClass(FirstActivity.this, LoginActivity.class);
-					// in.putExtra("user", user);
-					startActivity(in);
-					finish();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		t.start();
 	}
 
 }

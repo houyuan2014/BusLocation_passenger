@@ -1,6 +1,6 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import cn.cas.sict.utils.User;
+import cn.cas.sict.domain.User;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -23,7 +23,7 @@ public class NameActivity extends Activity {
 		ab.setDisplayHomeAsUpEnabled(true);
 		user = User.getUser();
 		et_Name = (EditText) findViewById(R.id.name);
-		et_Name.setText(user.getName());
+		et_Name.setText(user.getUsername());
 
 	}
 
@@ -39,10 +39,10 @@ public class NameActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.menu_save_name:
 			name = et_Name.getText().toString().trim();
-			if (name.equals(user.getName())) {
+			if (name.equals(user.getUsername())) {
 				finish();
 			} else {
-				user.setName(name);
+				user.setUsername(name);
 				finish();
 			}
 			break;

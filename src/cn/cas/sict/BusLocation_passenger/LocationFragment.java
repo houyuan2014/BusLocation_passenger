@@ -1,7 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import cn.cas.sict.utils.User;
-import cn.cas.sict.utils.Values;
+import cn.cas.sict.domain.User;
+import cn.cas.sict.utils.Globals;
 
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.AMap.OnInfoWindowClickListener;
@@ -49,7 +49,7 @@ public class LocationFragment extends Fragment implements
 		user = User.getUser();
 
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(Values.BROADCASTTOUI);
+		filter.addAction(Globals.BROADCASTTOUI);
 		receiver = new BroadcastReceiver() {
 
 			@Override
@@ -57,33 +57,33 @@ public class LocationFragment extends Fragment implements
 
 				switch (arg1.getIntExtra("flag", -1)) {
 
-				case Values.BUSFLAG:
+				case Globals.BUSFLAG:
 					busLat = arg1.getDoubleExtra("lat", -1);
 					busLng = arg1.getDoubleExtra("lng", -1);
 					busLatLng = new LatLng(busLat, busLng);
 					busMarker.setPosition(busLatLng);
 					break;
-				case Values.USERFLAG:
+				case Globals.USERFLAG:
 					userLat = arg1.getDoubleExtra("lat", -1);
 					userLng = arg1.getDoubleExtra("lng", -1);
 					userLatLng = new LatLng(userLat, userLng);
 					userMarker.setPosition(userLatLng);
 					break;
-				case Values.DISTANCEFLAG:
+				case Globals.DISTANCEFLAG:
 					getActivity().setTitle(
 							" 相距 "
 									+ (int) arg1.getFloatExtra(
 											"currentdistance", -1) + "米");
 					break;
-				case Values.BUSDISABLE:
+				case Globals.BUSDISABLE:
 					getActivity().setTitle("班车位置不可用");
 					break;
 				}
 			}
 		};
 		getActivity().registerReceiver(receiver, filter);
-		Intent in0 = new Intent(Values.BROADCASTTOSERVICE);
-		in0.putExtra("flag", Values.GETSERVICEINFO);
+		Intent in0 = new Intent(Globals.BROADCASTTOSERVICE);
+		in0.putExtra("flag", Globals.GETSERVICEINFO);
 		getActivity().sendBroadcast(in0);
 	}
 
@@ -118,17 +118,23 @@ public class LocationFragment extends Fragment implements
 	public void onResume() {
 		super.onResume();
 		mapView.onResume();
-		userMarker.setTitle(user.getName());
-		busMarker.setTitle(user.getRouteName());
-		busMarker.setSnippet(user.getRoutePhone());
+
 	}
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		// TODO Auto-generated method stub
+//		userMarker.setTitle(user.getUsername());
+//		busMarker.setTitle(user.getRouteName());
+//		busMarker.setSnippet(user.getRoutePhone());
 		if (marker.isInfoWindowShown()) {
 			marker.hideInfoWindow();
 		} else {
+			if(marker.equals(userMarker)){
+				marker.setTitle(user.getUsername());
+			}else{
+				marker.setTitle(user.getRouteName());
+				marker.setSnippet(user.getRoutePhone());
+			}
 			marker.showInfoWindow();
 		}
 		return true;
@@ -151,7 +157,7 @@ public class LocationFragment extends Fragment implements
 			if (busLatLng != null) {
 				map.animateCamera(CameraUpdateFactory.newLatLngZoom(busLatLng,
 						16));
-				busMarker.showInfoWindow();
+				onMarkerClick(busMarker);
 			} else {
 				Toast.makeText(getActivity(), "获取中", Toast.LENGTH_LONG).show();
 			}
@@ -160,7 +166,7 @@ public class LocationFragment extends Fragment implements
 			if (userLatLng != null) {
 				map.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng,
 						16));
-				userMarker.showInfoWindow();
+				onMarkerClick(userMarker);
 			} else {
 				Toast.makeText(getActivity(), "定位中", Toast.LENGTH_LONG).show();
 			}

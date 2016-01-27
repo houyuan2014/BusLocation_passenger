@@ -43,12 +43,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.cas.sict.BusLocation_passenger.LoginActivity"
-            android:label="登录" >
-        </activity>
-        <activity
-            android:name="cn.cas.sict.BusLocation_passenger.ZhuceActivity"
-            android:label="注册" >
+            android:name="cn.cas.sict.BusLocation_passenger.RegisterActivity"
+            android:label="登记" >
         </activity>
         <activity
             android:name="cn.cas.sict.BusLocation_passenger.MainActivity"
@@ -72,14 +68,6 @@
             android:theme="@android:style/Theme.Dialog" >
         </activity>
         <activity
-            android:name="cn.cas.sict.BusLocation_passenger.ContactsActivity"
-            android:label="@string/title_activity_contacts" >
-        </activity>
-        <activity
-            android:name="cn.cas.sict.BusLocation_passenger.ListActivity"
-            android:label="@string/title_activity_list" >
-        </activity>
-        <activity
             android:name="cn.cas.sict.BusLocation_passenger.SendMessageActivity"
             android:label="短信" >
         </activity>
@@ -89,7 +77,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <service android:name="cn.cas.sict.utils.MyService" >
+        <service android:name="cn.cas.sict.service.MyService" >
         </service>
     </application>
 

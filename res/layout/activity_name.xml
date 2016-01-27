@@ -15,6 +15,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="好名字可以让你的朋友更容易记住你。" />
+        android:hint="行不改名，坐不改姓。" />
 
 </LinearLayout>

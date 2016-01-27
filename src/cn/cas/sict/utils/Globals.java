@@ -1,6 +1,6 @@
 package cn.cas.sict.utils;
 
-public class Values {
+public class Globals {
 
 	public final static String SP_NAME = "userconfig";
 	public final static String BROADCASTTOUI = "cn.cas.sict.aaa";

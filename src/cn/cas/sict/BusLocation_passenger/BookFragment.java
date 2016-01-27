@@ -1,7 +1,7 @@
 package cn.cas.sict.BusLocation_passenger;
 
-import cn.cas.sict.utils.User;
-import cn.cas.sict.utils.Values;
+import cn.cas.sict.domain.User;
+import cn.cas.sict.utils.Globals;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,11 +30,11 @@ public class BookFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		user = User.getUser();
-		Intent in0 = new Intent(Values.BROADCASTTOSERVICE);
-		in0.putExtra("flag", Values.GETSERVICEINFO);
+		Intent in0 = new Intent(Globals.BROADCASTTOSERVICE);
+		in0.putExtra("flag", Globals.GETSERVICEINFO);
 		getActivity().sendBroadcast(in0);
 		IntentFilter filter = new IntentFilter();
-		filter.addAction(Values.BROADCASTTOUI);
+		filter.addAction(Globals.BROADCASTTOUI);
 		receiver = new BroadcastReceiver() {
 
 			@Override
@@ -42,14 +42,14 @@ public class BookFragment extends Fragment {
 
 				switch (arg1.getIntExtra("flag", -1)) {
 
-				case Values.BUSFLAG:
+				case Globals.BUSFLAG:
 					tv_location.setText(arg1.getStringExtra("busdesc"));
 					break;
-				case Values.DISTANCEFLAG:
+				case Globals.DISTANCEFLAG:
 					tv_distance.setText((int) arg1.getFloatExtra(
 							"currentdistance", -1) + "");
 					break;
-				case Values.BUSDISABLE:
+				case Globals.BUSDISABLE:
 					tv_location.setText(arg1.getStringExtra("班车位置不可用"));
 					break;
 				}

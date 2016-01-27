@@ -2,8 +2,7 @@
 <View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/im_qiu" 
-    android:id="@+id/view_qiu">"
+    android:background="@drawable/welcome2">
     
 
 </View>

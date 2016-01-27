@@ -1,12 +1,15 @@
-package cn.cas.sict.utils;
+package cn.cas.sict.service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import cn.cas.sict.domain.User;
+import cn.cas.sict.utils.HttpUtil;
+import cn.cas.sict.utils.Globals;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -15,6 +18,7 @@ import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps2d.AMapUtils;
 import com.amap.api.maps2d.model.LatLng;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -45,24 +49,24 @@ public class MyService extends Service implements AMapLocationListener {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		IntentFilter filter = new IntentFilter(Values.BROADCASTTOSERVICE);
+		IntentFilter filter = new IntentFilter(Globals.BROADCASTTOSERVICE);
 		receiver = new BroadcastReceiver() {
 
 			@Override
 			public void onReceive(Context arg0, Intent arg1) {
 				switch (arg1.getIntExtra("flag", -1)) {
 
-				case Values.GETSERVICEINFO:
+				case Globals.GETSERVICEINFO:
 					if (userLL != null) {
-						Intent in4 = new Intent(Values.BROADCASTTOUI);
-						in4.putExtra("flag", Values.USERFLAG);
+						Intent in4 = new Intent(Globals.BROADCASTTOUI);
+						in4.putExtra("flag", Globals.USERFLAG);
 						in4.putExtra("lat", userLat);
 						in4.putExtra("lng", userLng);
 						sendBroadcast(in4);
 					}
 					if (busLL != null) {
-						Intent in5 = new Intent(Values.BROADCASTTOUI);
-						in5.putExtra("flag", Values.BUSFLAG);
+						Intent in5 = new Intent(Globals.BROADCASTTOUI);
+						in5.putExtra("flag", Globals.BUSFLAG);
 						in5.putExtra("lat", busLat);
 						in5.putExtra("lng", busLng);
 						sendBroadcast(in5);
@@ -97,7 +101,7 @@ public class MyService extends Service implements AMapLocationListener {
 		 * 所以同一个定时器任务只能被放置一次
 		 */
 		timerTask = new MyTimerTask(); // 新建一个任务（必须）
-		timer.scheduleAtFixedRate(timerTask, 0, 6000);
+		timer.scheduleAtFixedRate(timerTask, 0, 3000);
 
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -121,39 +125,45 @@ public class MyService extends Service implements AMapLocationListener {
 		}
 	};
 
+	@SuppressLint("HandlerLeak")
 	class MyHandler extends Handler {
 		public void handleMessage(Message msg) {
 			if (msg.what == 3) { // 执行定时任务
 
-				System.out.println("---service---" + user.toString());
-
-				mapRoute = new HashMap<String, Object>();
-				mapRoute.put("route", user.getRouteNum() + "");
 				try {
-					JSONObject jsonObj = new JSONObject(HttpUtil.getBusLoc(
-							"urlappend", mapRoute));
-					if (jsonObj.get("flag").equals("true")) {
-						busLat = Double.parseDouble(jsonObj.getString("lat"));
-						busLng = Double.parseDouble(jsonObj.getString("lng"));
+					String url = "GetLocationSrevlet";
+					JSONObject json = new JSONObject();
+					json.put("route", user.getRouteNum());
+					String str = HttpUtil.sendPost(url, json);
+
+					if (str == null) {
+						System.out.println("result = null");
+						return;
+					}
+
+					JSONObject result = new JSONObject(str);
+					if (result.get("flag").equals("true")) {
+						busLat = Double.parseDouble(result.getString("lat"));
+						busLng = Double.parseDouble(result.getString("lng"));
 						busLL = new LatLng(busLat, busLng);
-						String busLoc = jsonObj.getString("desc");
+						String busLoc = result.getString("desc");
 						// 向ui线程发送消息
-						Intent in0 = new Intent(Values.BROADCASTTOUI);
-						in0.putExtra("flag", Values.BUSFLAG);
+						Intent in0 = new Intent(Globals.BROADCASTTOUI);
+						in0.putExtra("flag", Globals.BUSFLAG);
 						in0.putExtra("lat", busLat);
 						in0.putExtra("lng", busLng);
 						in0.putExtra("busdesc", busLoc);
 						sendBroadcast(in0);
-
+						// 计算与班车距离
 						if (userLL != null && busLL != null) {
 							distance = AMapUtils.calculateLineDistance(userLL,
 									busLL);
-							Intent in1 = new Intent(Values.BROADCASTTOUI);
-							in1.putExtra("flag", Values.DISTANCEFLAG);
+							Intent in1 = new Intent(Globals.BROADCASTTOUI);
+							in1.putExtra("flag", Globals.DISTANCEFLAG);
 							in1.putExtra("currentdistance", distance);
 							sendBroadcast(in1);
-
-							if (user.getIsRemind() && !hasVibrate
+							// 震动提醒
+							if (user.isRemind() && !hasVibrate
 									&& distance < user.getRemindDistance()) {
 								vibrator.vibrate(new long[] { 10, 600, 60, 600,
 										60, 600 }, -1);
@@ -161,8 +171,8 @@ public class MyService extends Service implements AMapLocationListener {
 							}
 						}
 					} else {
-						Intent in2 = new Intent(Values.BROADCASTTOUI);
-						in2.putExtra("flag", Values.BUSDISABLE);
+						Intent in2 = new Intent(Globals.BROADCASTTOUI);
+						in2.putExtra("flag", Globals.BUSDISABLE);
 						sendBroadcast(in2);
 					}
 				} catch (NumberFormatException e) {
@@ -172,6 +182,7 @@ public class MyService extends Service implements AMapLocationListener {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+
 			}
 
 		}
@@ -183,8 +194,8 @@ public class MyService extends Service implements AMapLocationListener {
 			userLat = arg0.getLatitude();
 			userLng = arg0.getLongitude();
 			userLL = new LatLng(userLat, userLng);
-			Intent in3 = new Intent(Values.BROADCASTTOUI);
-			in3.putExtra("flag", Values.USERFLAG);
+			Intent in3 = new Intent(Globals.BROADCASTTOUI);
+			in3.putExtra("flag", Globals.USERFLAG);
 			in3.putExtra("lat", userLat);
 			in3.putExtra("lng", userLng);
 			sendBroadcast(in3);
@@ -195,28 +206,23 @@ public class MyService extends Service implements AMapLocationListener {
 	}
 
 	@Override
+	public void onLocationChanged(Location location) {
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+	}
+
+	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
-
-	@Override
-	public void onLocationChanged(Location arg0) {
-
-	}
-
-	@Override
-	public void onProviderDisabled(String arg0) {
-
-	}
-
-	@Override
-	public void onProviderEnabled(String arg0) {
-
-	}
-
-	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-
-	}
-
 }

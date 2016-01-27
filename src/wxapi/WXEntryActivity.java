@@ -9,9 +9,9 @@ import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
-/** 微信客户端回调activity示例 */
+/** 寰俊瀹㈡埛绔洖璋僡ctivity绀轰緥 */
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
-	// IWXAPI 是第三方app和微信通信的openapi接口
+	// IWXAPI 鏄涓夋柟app鍜屽井淇￠�氫俊鐨刼penapi鎺ュ彛
 	private IWXAPI api;
 
 	@Override
@@ -31,13 +31,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 		// + resp.errStr);
 		switch (resp.errCode) {
 		case BaseResp.ErrCode.ERR_OK:
-			// 分享成功
+			// 鍒嗕韩鎴愬姛
 			break;
 		case BaseResp.ErrCode.ERR_USER_CANCEL:
-			// 分享取消
+			// 鍒嗕韩鍙栨秷
 			break;
 		case BaseResp.ErrCode.ERR_AUTH_DENIED:
-			// 分享拒绝
+			// 鍒嗕韩鎷掔粷
 			break;
 		}
 	}
